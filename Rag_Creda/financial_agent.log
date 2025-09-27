@@ -1,0 +1,30 @@
+2025-09-26 20:22:24.248 | INFO     | __main__:setup_collections:473 - ChromaDB collections setup (created if not exist)
+2025-09-26 20:22:24.316 | INFO     | __main__:setup_database:105 - SQLite database setup completed
+2025-09-26 20:22:24.316 | INFO     | __main__:__init__:439 - ChromaDB initialized successfully
+2025-09-26 20:22:24.317 | INFO     | __main__:populate_knowledge_base:477 - Populating financial knowledge base...
+2025-09-26 20:22:28.559 | INFO     | __main__:add_curated_knowledge:806 - Added 23 general financial knowledge items
+2025-09-26 20:22:28.559 | INFO     | __main__:add_curated_knowledge:807 - Added 2 tax-specific knowledge items
+2025-09-26 20:22:28.559 | INFO     | __main__:add_curated_knowledge:808 - Added 2 investment-specific knowledge items
+2025-09-26 20:22:28.563 | INFO     | __main__:fetch_indian_stock_data:224 - Fetching Indian stock market data...
+2025-09-26 20:22:36.294 | INFO     | __main__:fetch_indian_stock_data:280 - Processed data for 10 stocks
+2025-09-26 20:22:36.294 | INFO     | __main__:fetch_mutual_fund_data:333 - Loading mutual fund data...
+2025-09-26 20:22:37.862 | INFO     | __main__:crawl_financial_websites:155 - Crawling: https://www.moneycontrol.com/news/business/personal-finance/
+2025-09-26 20:22:43.128 | INFO     | __main__:store_crawled_content:215 - Stored content from Moneycontrol: No title...
+2025-09-26 20:22:43.129 | SUCCESS  | __main__:crawl_financial_websites:186 - Successfully crawled: Moneycontrol
+2025-09-26 20:22:46.144 | INFO     | __main__:crawl_financial_websites:155 - Crawling: https://economictimes.indiatimes.com/wealth
+2025-09-26 20:22:51.663 | INFO     | __main__:store_crawled_content:215 - Stored content from Economic Times: No title...
+2025-09-26 20:22:51.664 | SUCCESS  | __main__:crawl_financial_websites:186 - Successfully crawled: Economic Times
+2025-09-26 20:22:54.668 | INFO     | __main__:crawl_financial_websites:155 - Crawling: https://www.livemint.com/money
+2025-09-26 20:22:57.678 | INFO     | __main__:store_crawled_content:215 - Stored content from LiveMint: No title...
+2025-09-26 20:22:57.679 | SUCCESS  | __main__:crawl_financial_websites:186 - Successfully crawled: LiveMint
+2025-09-26 20:23:00.681 | INFO     | __main__:crawl_financial_websites:155 - Crawling: https://cleartax.in/s/income-tax-guide
+2025-09-26 20:23:04.394 | INFO     | __main__:store_crawled_content:215 - Stored content from ClearTax: No title...
+2025-09-26 20:23:04.394 | SUCCESS  | __main__:crawl_financial_websites:186 - Successfully crawled: ClearTax
+2025-09-26 20:23:07.399 | INFO     | __main__:crawl_financial_websites:155 - Crawling: https://groww.in/blog/category/tax
+2025-09-26 20:23:11.265 | INFO     | __main__:store_crawled_content:215 - Stored content from Groww: No title...
+2025-09-26 20:23:11.266 | SUCCESS  | __main__:crawl_financial_websites:186 - Successfully crawled: Groww
+2025-09-26 20:23:15.206 | INFO     | __main__:process_crawled_data:878 - Added/Updated 2 tax-related crawled documents
+2025-09-26 20:23:15.573 | INFO     | __main__:process_crawled_data:889 - Added/Updated 3 general crawled documents
+2025-09-26 20:23:16.363 | INFO     | __main__:add_stock_data:966 - Added/Updated 10 stock analysis documents
+2025-09-26 20:23:16.982 | INFO     | __main__:add_fund_data:1033 - Added/Updated 8 mutual fund analysis documents
+2025-09-26 20:23:16.983 | SUCCESS  | __main__:populate_knowledge_base:502 - Financial knowledge base populated successfully!

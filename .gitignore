@@ -1,0 +1,5 @@
+/rag/chroma_financial_db
+bun.lock
+.env
+
+\frontend\finvoice-web\node_modules
