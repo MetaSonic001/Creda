@@ -1,0 +1,1060 @@
+{
+  "timestamp": "2025-09-26T19:57:02.221980",
+  "finance_url": "http://localhost:8001",
+  "multilingual_url": "http://localhost:8000",
+  "summary": {
+    "total_tests": 32,
+    "passed": 32,
+    "failed": 0,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "name": "Finance Root",
+      "status": "PASS",
+      "response_time": 0.012265443801879883,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "message": "Finance Processing & RAG Service",
+        "status": "running"
+      }
+    },
+    {
+      "name": "Finance Health",
+      "status": "PASS",
+      "response_time": 0.050451040267944336,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "status": "healthy",
+        "rag_system": {
+          "knowledge_base_docs": 10,
+          "embedding_model": "AI4Bharat/Multilingual",
+          "similarity_threshold": 0.7,
+          "confidence_threshold": 0.6,
+          "chunking": "512 tokens with 50 overlap",
+          "test_query_time": 0.041,
+          "performance_target": "<0.5 seconds",
+          "target_achieved": true
+        },
+        "ml_models": {
+          "persona_clustering": true,
+          "anomaly_detection": true,
+          "financial_health_scoring": true
+        },
+        "features": [
+          "Semantic search with similarity >0.7",
+          "Source citation with confidence scoring",
+          "Indian financial authority validation",
+          "Document chunking with metadata",
+          "Performance optimization <0.5s"
+        ]
+      }
+    },
+    {
+      "name": "Knowledge Base Stats",
+      "status": "PASS",
+      "response_time": 0.011306524276733398,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "total_documents": 10,
+        "categories": [
+          "emergency_fund",
+          "asset_allocation",
+          "tax_planning",
+          "investments",
+          "insurance",
+          "debt_management",
+          "retirement",
+          "budgeting"
+        ],
+        "embedding_model": "ai4bharat/indic-sentence-bert-nli"
+      }
+    },
+    {
+      "name": "Process Finance Request",
+      "status": "PASS",
+      "response_time": 0.1203606128692627,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "intent": "financial_advice",
+        "response": "According to RBI guidelines, Reserve Bank of India (RBI) strongly recommends maintaining an emergency fund equivalent to 6-12 months of monthly expenses. This provides financial security against unexpected events like job loss or medical emergencies.",
+        "data": {
+          "query_type": "general",
+          "confidence": 0.769
+        },
+        "sources": [
+          "Personal Finance Best Practices India",
+          "IRDAI Insurance Guidelines 2023",
+          "AMFI Investor Education Guidelines",
+          "Income Tax Act 1961, Section 80C",
+          "RBI Financial Literacy Guidelines 2023",
+          "Processed in 0.06s"
+        ]
+      }
+    },
+    {
+      "name": "Portfolio Allocation",
+      "status": "PASS",
+      "response_time": 0.08208823204040527,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "success": true,
+        "allocation": {
+          "persona": "Mid-age Balanced",
+          "persona_id": 2,
+          "persona_description": "Balanced approach to growth and stability",
+          "allocation": {
+            "large_cap_equity": 0.259,
+            "mid_small_cap_equity": 0.141,
+            "international_equity": 0.071,
+            "government_bonds": 0.306,
+            "corporate_bonds": 0.127,
+            "gold": 0.076,
+            "cash_equivalents": 0.02
+          },
+          "portfolio_metrics": {
+            "expected_return": 0.099,
+            "portfolio_risk": 0.059,
+            "risk_score": 0.29,
+            "sharpe_ratio": 0.58,
+            "risk_free_rate": 0.065
+          },
+          "glidepath_equity": 0.8,
+          "risk_factors": {
+            "age_factor": 0.8,
+            "risk_factor": 0.6,
+            "income_factor": 1.0,
+            "dependents_factor": 1.0
+          },
+          "reasoning": "Age 30, Risk 3/5, Income ₹800,000",
+          "rebalancing_needed": false
+        },
+        "rag_insights": {
+          "answer": "According to PFRDA, SEBI REIT Regulations, Financial Planning Standards Board, SEBI, Securities and Exchange Board of India (SEBI) investor education guidelines suggest age-based asset allocation strategy. This strategy balances growth potential with risk management based on your investment horizon.",
+          "confidence": 0.752,
+          "sources": [
+            "Personal Finance Best Practices India",
+            "Real Estate Investment Guidelines India",
+            "SEBI Investor Education and Protection Fund Guidelines",
+            "Pension Fund Regulatory Authority Guidelines",
+            "SEBI Guidelines on Gold Investment",
+            "Processed in 0.06s"
+          ]
+        },
+        "performance": {
+          "processing_time_seconds": 0.0677,
+          "target_met": true
+        },
+        "timestamp": "2025-09-26T14:26:51.618323"
+      }
+    },
+    {
+      "name": "Budget Optimization",
+      "status": "PASS",
+      "response_time": 0.011182069778442383,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "success": true,
+        "budget_allocation": {
+          "needs": 0.6,
+          "wants": 0.25,
+          "savings": 0.15
+        },
+        "allocation_amounts": {
+          "needs": 60000,
+          "wants": 25000,
+          "savings": 15000
+        },
+        "reasoning": "Budget optimized using adaptive 50/30/20 rule with personalized adjustments. Increased needs allocation to 60.0% based on essential expense patterns. Moderate savings at 15.0% balancing current needs with future goals.",
+        "confidence": 0.5,
+        "spending_analysis": {
+          "total_expenses": 55000,
+          "category_breakdown": {
+            "Housing": 30000,
+            "Food & Dining": 15000,
+            "Transportation": 10000
+          },
+          "current_allocation": {
+            "needs": 0.45454545454545453,
+            "wants": 0.0,
+            "savings": 0.0
+          },
+          "patterns": {
+            "high_needs_spender": false,
+            "high_wants_spender": false,
+            "good_saver": false,
+            "needs_rebalancing": false
+          }
+        },
+        "recommendations": [
+          "Focus on essential expenses - consider cost optimization in utilities and groceries.",
+          "Try to increase savings gradually - even ₹1000 more monthly makes a significant long-term difference."
+        ],
+        "performance": {
+          "processing_time_seconds": 0.0004,
+          "target_met": true
+        },
+        "methodology": {
+          "algorithm": "Multi-Armed Bandit with Epsilon-Greedy",
+          "base_rule": "50/30/20 (Needs/Wants/Savings)",
+          "learning_rate": 0.05,
+          "exploration_rate": 0.1,
+          "adaptations": [
+            "Income-based",
+            "Pattern-based",
+            "Feedback-driven"
+          ]
+        },
+        "timestamp": "2025-09-26T14:26:51.629562"
+      }
+    },
+    {
+      "name": "Portfolio Rebalancing Check",
+      "status": "PASS",
+      "response_time": 0.1109461784362793,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "success": true,
+        "rebalancing_analysis": {
+          "rebalancing_needed": true,
+          "max_drift_pct": 1.0,
+          "threshold_used": 0.05,
+          "actions_required": [
+            {
+              "asset": "large_cap_equity",
+              "action": "increase",
+              "current": 0,
+              "target": 0.308,
+              "drift_pct": 1.0,
+              "amount_change": 0.308
+            },
+            {
+              "asset": "mid_small_cap_equity",
+              "action": "increase",
+              "current": 0,
+              "target": 0.168,
+              "drift_pct": 1.0,
+              "amount_change": 0.168
+            },
+            {
+              "asset": "international_equity",
+              "action": "increase",
+              "current": 0,
+              "target": 0.084,
+              "drift_pct": 1.0,
+              "amount_change": 0.084
+            },
+            {
+              "asset": "government_bonds",
+              "action": "increase",
+              "current": 0,
+              "target": 0.253,
+              "drift_pct": 1.0,
+              "amount_change": 0.253
+            },
+            {
+              "asset": "corporate_bonds",
+              "action": "increase",
+              "current": 0,
+              "target": 0.105,
+              "drift_pct": 1.0,
+              "amount_change": 0.105
+            },
+            {
+              "asset": "gold",
+              "action": "increase",
+              "current": 0,
+              "target": 0.063,
+              "drift_pct": 1.0,
+              "amount_change": 0.063
+            },
+            {
+              "asset": "cash_equivalents",
+              "action": "increase",
+              "current": 0,
+              "target": 0.02,
+              "drift_pct": 1.0,
+              "amount_change": 0.02
+            }
+          ],
+          "priority": "high",
+          "estimated_cost": 0.007,
+          "next_review_days": 30
+        },
+        "target_allocation": {
+          "large_cap_equity": 0.308,
+          "mid_small_cap_equity": 0.168,
+          "international_equity": 0.084,
+          "government_bonds": 0.253,
+          "corporate_bonds": 0.105,
+          "gold": 0.063,
+          "cash_equivalents": 0.02
+        },
+        "current_allocation": {
+          "equity": 65,
+          "debt": 25,
+          "cash": 10
+        },
+        "rag_insights": {
+          "answer": "I found some information but it may not be directly relevant to your question. Please rephrase your query or ask about specific financial topics.",
+          "confidence": 0.3,
+          "sources": []
+        },
+        "performance": {
+          "processing_time_seconds": 0.0546
+        },
+        "timestamp": "2025-09-26T14:26:51.735501"
+      }
+    },
+    {
+      "name": "Financial Health Score",
+      "status": "PASS",
+      "response_time": 0.008681535720825195,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "health_score": {
+          "total_score": 73.5,
+          "grade": "B",
+          "factors": {
+            "savings_rate": {
+              "score": 30,
+              "rate": "33.3%"
+            },
+            "diversification": {
+              "score": 12,
+              "level": 3
+            },
+            "emergency_fund": {
+              "score": 10,
+              "status": "insufficient"
+            },
+            "age_allocation": {
+              "score": 21.5,
+              "appropriateness": "good"
+            }
+          },
+          "recommendations": [
+            "Build emergency fund covering 6 months of expenses",
+            "Diversify investments across asset classes"
+          ]
+        },
+        "timestamp": "2025-09-26T14:26:51.746451"
+      }
+    },
+    {
+      "name": "Detect Spending Anomalies",
+      "status": "PASS",
+      "response_time": 0.05238771438598633,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "anomalies": [],
+        "total_anomalies": 0,
+        "timestamp": "2025-09-26T14:26:51.796812"
+      }
+    },
+    {
+      "name": "RAG Query",
+      "status": "PASS",
+      "response_time": 0.06136035919189453,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "answer": "According to RBI guidelines, Eligible investments include Equity Linked Savings Scheme (ELSS), Public Provident Fund (PPF), Employee Provident Fund (EPF), life insurance premiums, home loan principal repayment, National Savings Certificate (NSC), and tax-saving fixed deposits. This provides financial security against unexpected events like job loss or medical emergencies.",
+        "sources": [
+          "Real Estate Investment Guidelines India",
+          "Income Tax Act 1961, Section 80C",
+          "AMFI Investor Education Guidelines",
+          "Processed in 0.05s"
+        ],
+        "confidence": 0.75
+      }
+    },
+    {
+      "name": "Comprehensive Portfolio Optimization",
+      "status": "PASS",
+      "response_time": 0.12967681884765625,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "success": true,
+        "profile_summary": {
+          "persona": "Mid-age Balanced",
+          "age": 32,
+          "income": 1500000.0,
+          "risk_tolerance": 4,
+          "dependents": 1
+        },
+        "optimal_allocation": {
+          "large_cap_equity": 0.32,
+          "mid_small_cap_equity": 0.175,
+          "international_equity": 0.087,
+          "government_bonds": 0.239,
+          "corporate_bonds": 0.1,
+          "gold": 0.06,
+          "cash_equivalents": 0.02
+        },
+        "portfolio_metrics": {
+          "expected_return": 0.105,
+          "portfolio_risk": 0.069,
+          "risk_score": 0.34,
+          "sharpe_ratio": 0.58,
+          "risk_free_rate": 0.065
+        },
+        "investment_insights": {
+          "goal_strategy": {
+            "answer": "According to AMFI, Financial Planning Standards Board, SEBI, Income Tax Department, PFRDA, Securities and Exchange Board of India (SEBI) investor education guidelines suggest age-based asset allocation strategy. This strategy balances growth potential with risk management based on your investment horizon.",
+            "confidence": 0.775,
+            "sources": [
+              "Personal Finance Best Practices India",
+              "AMFI Investor Education Guidelines",
+              "Income Tax Act 1961, Section 80C",
+              "SEBI Investor Education and Protection Fund Guidelines",
+              "Pension Fund Regulatory Authority Guidelines",
+              "Processed in 0.05s"
+            ]
+          },
+          "tax_optimization": {
+            "answer": "According to Income Tax Department, AMFI, Financial Planning Standards Board, SEBI, Eligible investments include Equity Linked Savings Scheme (ELSS), Public Provident Fund (PPF), Employee Provident Fund (EPF), life insurance premiums, home loan principal repayment, National Savings Certificate (NSC), and tax-saving fixed deposits. This strategy balances growth potential with risk management based on your investment horizon.",
+            "confidence": 0.763,
+            "sources": [
+              "Personal Finance Best Practices India",
+              "AMFI Investor Education Guidelines",
+              "Income Tax Act 1961, Section 80C",
+              "SEBI Investor Education and Protection Fund Guidelines",
+              "SEBI Guidelines on Gold Investment",
+              "Processed in 0.06s"
+            ]
+          }
+        },
+        "rebalancing": {
+          "rebalancing_needed": true,
+          "max_drift_pct": 1.0,
+          "threshold_used": 0.05,
+          "actions_required": [
+            {
+              "asset": "large_cap_equity",
+              "action": "increase",
+              "current": 0,
+              "target": 0.32,
+              "drift_pct": 1.0,
+              "amount_change": 0.32
+            },
+            {
+              "asset": "mid_small_cap_equity",
+              "action": "increase",
+              "current": 0,
+              "target": 0.175,
+              "drift_pct": 1.0,
+              "amount_change": 0.175
+            },
+            {
+              "asset": "international_equity",
+              "action": "increase",
+              "current": 0,
+              "target": 0.087,
+              "drift_pct": 1.0,
+              "amount_change": 0.087
+            },
+            {
+              "asset": "government_bonds",
+              "action": "increase",
+              "current": 0,
+              "target": 0.239,
+              "drift_pct": 1.0,
+              "amount_change": 0.239
+            },
+            {
+              "asset": "corporate_bonds",
+              "action": "increase",
+              "current": 0,
+              "target": 0.1,
+              "drift_pct": 1.0,
+              "amount_change": 0.1
+            },
+            {
+              "asset": "gold",
+              "action": "increase",
+              "current": 0,
+              "target": 0.06,
+              "drift_pct": 1.0,
+              "amount_change": 0.06
+            },
+            {
+              "asset": "cash_equivalents",
+              "action": "increase",
+              "current": 0,
+              "target": 0.02,
+              "drift_pct": 1.0,
+              "amount_change": 0.02
+            }
+          ],
+          "priority": "high",
+          "estimated_cost": 0.007,
+          "next_review_days": 30
+        },
+        "recommendations": {
+          "immediate_actions": [
+            "Rebalancing required - 7 assets need adjustment"
+          ],
+          "periodic_reviews": "Quarterly rebalancing review recommended",
+          "risk_monitoring": "Monitor portfolio drift > 5% threshold",
+          "tax_planning": "Consider tax-loss harvesting opportunities"
+        },
+        "performance": {
+          "processing_time_seconds": 0.1101,
+          "target_met": false,
+          "target_threshold": 0.1
+        },
+        "timestamp": "2025-09-26T14:26:51.975287"
+      }
+    },
+    {
+      "name": "Multilingual Root",
+      "status": "PASS",
+      "response_time": 0.013979434967041016,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "message": "Multilingual Finance Voice Assistant API",
+        "status": "running"
+      }
+    },
+    {
+      "name": "Multilingual Health",
+      "status": "PASS",
+      "response_time": 0.005533933639526367,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "status": "healthy",
+        "models_loaded": {
+          "asr": {
+            "loaded": true,
+            "type": "AI4Bharat-IndicConformer",
+            "methods": [
+              "forward"
+            ]
+          },
+          "translation": {
+            "loaded": true,
+            "indic_processor": true
+          }
+        },
+        "supported_languages": [
+          "hindi",
+          "english",
+          "tamil",
+          "telugu",
+          "bengali",
+          "marathi",
+          "gujarati",
+          "kannada",
+          "malayalam",
+          "punjabi",
+          "urdu"
+        ],
+        "device": "cpu",
+        "api_keys_configured": {
+          "gemini": true,
+          "groq": true,
+          "hf_token": true
+        },
+        "performance_target": "<3 seconds for 10-second audio",
+        "features": [
+          "Audio preprocessing (16kHz mono)",
+          "Language detection from audio",
+          "AI4Bharat IndicConformer ASR",
+          "Whisper fallback",
+          "Confidence scoring",
+          "Quality assessment"
+        ]
+      }
+    },
+    {
+      "name": "ASR Model Test",
+      "status": "PASS",
+      "response_time": 0.007213115692138672,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "model_loaded": true,
+        "model_type": "IndicASRModel",
+        "available_methods": [
+          "forward",
+          "__call__"
+        ],
+        "device": "cpu",
+        "test_status": "ready",
+        "ai4bharat_ready": true,
+        "fallback_needed": false
+      }
+    },
+    {
+      "name": "Text Translation (Hindi)",
+      "status": "PASS",
+      "response_time": 0.5560095310211182,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "translated_text": "What is mutual fund?"
+      }
+    },
+    {
+      "name": "Text Translation (English)",
+      "status": "PASS",
+      "response_time": 0.4007728099822998,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "translated_text": "म्यूचुअल फंड क्या है?"
+      }
+    },
+    {
+      "name": "Intent Understanding",
+      "status": "PASS",
+      "response_time": 1.9766368865966797,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "intent": "general_query",
+        "entities": {
+          "amount": null,
+          "category": null,
+          "time_period": null
+        },
+        "confidence": 0.5
+      }
+    },
+    {
+      "name": "Audio Response Generation",
+      "status": "PASS",
+      "response_time": 0.99989914894104,
+      "status_code": 200,
+      "error": null,
+      "response_data": "Audio file received (38304 bytes, audio/mpeg)"
+    },
+    {
+      "name": "ML: Translate Hindi Investment Query",
+      "status": "PASS",
+      "response_time": 0.6454169750213623,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "translated_text": "मैं 30 साल का हूं और रिटायरमेंट के लिए 5 लाख रुपए निवेश करना चाहता हूं"
+      }
+    },
+    {
+      "name": "Finance: Portfolio for 30yr Hindi User",
+      "status": "PASS",
+      "response_time": 0.057967424392700195,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "success": true,
+        "allocation": {
+          "persona": "Mid-age Balanced",
+          "persona_id": 2,
+          "persona_description": "Balanced approach to growth and stability",
+          "allocation": {
+            "large_cap_equity": 0.259,
+            "mid_small_cap_equity": 0.141,
+            "international_equity": 0.071,
+            "government_bonds": 0.306,
+            "corporate_bonds": 0.127,
+            "gold": 0.076,
+            "cash_equivalents": 0.02
+          },
+          "portfolio_metrics": {
+            "expected_return": 0.099,
+            "portfolio_risk": 0.059,
+            "risk_score": 0.29,
+            "sharpe_ratio": 0.58,
+            "risk_free_rate": 0.065
+          },
+          "glidepath_equity": 0.8,
+          "risk_factors": {
+            "age_factor": 0.8,
+            "risk_factor": 0.6,
+            "income_factor": 1.0,
+            "dependents_factor": 1.0
+          },
+          "reasoning": "Age 30, Risk 3/5, Income ₹1,200,000",
+          "rebalancing_needed": false
+        },
+        "rag_insights": {
+          "answer": "According to PFRDA, SEBI REIT Regulations, Financial Planning Standards Board, SEBI, Securities and Exchange Board of India (SEBI) investor education guidelines suggest age-based asset allocation strategy. This strategy balances growth potential with risk management based on your investment horizon.",
+          "confidence": 0.752,
+          "sources": [
+            "Personal Finance Best Practices India",
+            "Real Estate Investment Guidelines India",
+            "SEBI Investor Education and Protection Fund Guidelines",
+            "Pension Fund Regulatory Authority Guidelines",
+            "SEBI Guidelines on Gold Investment",
+            "Processed in 0.05s"
+          ]
+        },
+        "performance": {
+          "processing_time_seconds": 0.0472,
+          "target_met": true
+        },
+        "timestamp": "2025-09-26T14:26:56.373742"
+      }
+    },
+    {
+      "name": "ML: Generate Hindi Audio Response",
+      "status": "PASS",
+      "response_time": 1.7347230911254883,
+      "status_code": 200,
+      "error": null,
+      "response_data": "Audio file received (64512 bytes, audio/mpeg)"
+    },
+    {
+      "name": "ML: Translate Marathi Tax Query",
+      "status": "PASS",
+      "response_time": 0.5534160137176514,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "translated_text": "ELSS म्युच्युअल फंडामध्ये गुंतवणूक केल्याने कर सवलत मिळते का?"
+      }
+    },
+    {
+      "name": "Finance: RAG Query ELSS Tax Benefits",
+      "status": "PASS",
+      "response_time": 0.08879947662353516,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "answer": "According to RBI guidelines, Eligible investments include Equity Linked Savings Scheme (ELSS), Public Provident Fund (PPF), Employee Provident Fund (EPF), life insurance premiums, home loan principal repayment, National Savings Certificate (NSC), and tax-saving fixed deposits. This provides financial security against unexpected events like job loss or medical emergencies.",
+        "sources": [
+          "Income Tax Act 1961, Section 80C",
+          "Processed in 0.08s"
+        ],
+        "confidence": 0.829
+      }
+    },
+    {
+      "name": "ML: Translate Response to Marathi",
+      "status": "PASS",
+      "response_time": 0.774066686630249,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "translated_text": "Yes, ELSS mutual funds provide tax deduction up to 1.5 lakh under Section 80C with 3-year lock-in period."
+      }
+    },
+    {
+      "name": "ML: Extract Hindi SIP Intent",
+      "status": "PASS",
+      "response_time": 0.3907182216644287,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "intent": "general_query",
+        "entities": {
+          "amount": null,
+          "category": null,
+          "time_period": null
+        },
+        "confidence": 0.5
+      }
+    },
+    {
+      "name": "Finance: Process SIP Planning Request",
+      "status": "PASS",
+      "response_time": 0.05400586128234863,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "intent": "investment_planning",
+        "response": "According to AMFI guidelines, Association of Mutual Funds in India (AMFI) promotes Systematic Investment Plan (SIP) as disciplined investment approach. SIP is ideal for disciplined long-term wealth creation with risk mitigation.",
+        "data": {
+          "query_type": "general",
+          "confidence": 0.741
+        },
+        "sources": [
+          "Personal Finance Best Practices India",
+          "Pension Fund Regulatory Authority Guidelines",
+          "RBI Financial Literacy Guidelines 2023",
+          "AMFI Investor Education Guidelines",
+          "Processed in 0.05s"
+        ]
+      }
+    },
+    {
+      "name": "Finance: Budget for SIP Planning",
+      "status": "PASS",
+      "response_time": 0.006105184555053711,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "success": true,
+        "budget_allocation": {
+          "needs": 0.597,
+          "wants": 0.245,
+          "savings": 0.158
+        },
+        "allocation_amounts": {
+          "needs": 47760,
+          "wants": 19600,
+          "savings": 12640
+        },
+        "reasoning": "Budget optimized using adaptive 50/30/20 rule with personalized adjustments. Increased needs allocation to 59.7% based on essential expense patterns. Moderate savings at 15.8% balancing current needs with future goals.",
+        "confidence": 0.5,
+        "spending_analysis": {
+          "total_expenses": 60000,
+          "category_breakdown": {
+            "Housing": 25000,
+            "Food & Dining": 15000,
+            "Transportation": 10000,
+            "SIP Investment": 10000
+          },
+          "current_allocation": {
+            "needs": 0.4166666666666667,
+            "wants": 0.0,
+            "savings": 0.0
+          },
+          "patterns": {
+            "high_needs_spender": false,
+            "high_wants_spender": false,
+            "good_saver": false,
+            "needs_rebalancing": false
+          }
+        },
+        "recommendations": [
+          "Focus on essential expenses - consider cost optimization in utilities and groceries.",
+          "Limited discretionary spending - ensure work-life balance and occasional treats.",
+          "Try to increase savings gradually - even ₹1000 more monthly makes a significant long-term difference."
+        ],
+        "performance": {
+          "processing_time_seconds": 0.0001,
+          "target_met": true
+        },
+        "methodology": {
+          "algorithm": "Multi-Armed Bandit with Epsilon-Greedy",
+          "base_rule": "50/30/20 (Needs/Wants/Savings)",
+          "learning_rate": 0.05,
+          "exploration_rate": 0.1,
+          "adaptations": [
+            "Income-based",
+            "Pattern-based",
+            "Feedback-driven"
+          ]
+        },
+        "timestamp": "2025-09-26T14:26:59.760332"
+      }
+    },
+    {
+      "name": "ML: Translate Marathi Emergency Query",
+      "status": "PASS",
+      "response_time": 0.49045228958129883,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "translated_text": "आपत्कालीन निधीसाठी किती पैसे ठेवावे लागतील?"
+      }
+    },
+    {
+      "name": "Finance: Calculate Financial Health",
+      "status": "PASS",
+      "response_time": 0.05243873596191406,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "health_score": {
+          "total_score": 54.5,
+          "grade": "C",
+          "factors": {
+            "savings_rate": {
+              "score": 15,
+              "rate": "12.5%"
+            },
+            "diversification": {
+              "score": 8,
+              "level": 2
+            },
+            "emergency_fund": {
+              "score": 10,
+              "status": "insufficient"
+            },
+            "age_allocation": {
+              "score": 21.5,
+              "appropriateness": "good"
+            }
+          },
+          "recommendations": [
+            "Increase savings rate to at least 20% of income",
+            "Build emergency fund covering 6 months of expenses",
+            "Diversify investments across asset classes"
+          ]
+        },
+        "timestamp": "2025-09-26T14:27:00.272662"
+      }
+    },
+    {
+      "name": "ML: Generate Marathi Audio Response",
+      "status": "PASS",
+      "response_time": 1.4181938171386719,
+      "status_code": 200,
+      "error": null,
+      "response_data": "Audio file received (59184 bytes, audio/mpeg)"
+    },
+    {
+      "name": "ML: Translate Hindi Fund Comparison",
+      "status": "PASS",
+      "response_time": 0.6968436241149902,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "translated_text": "लार्ज कैप और स्मॉल कैप फंड में क्या अंतर है?"
+      }
+    },
+    {
+      "name": "Finance: Comprehensive Portfolio Analysis",
+      "status": "PASS",
+      "response_time": 0.13350987434387207,
+      "status_code": 200,
+      "error": null,
+      "response_data": {
+        "success": true,
+        "profile_summary": {
+          "persona": "Mid-age Balanced",
+          "age": 35,
+          "income": 1500000.0,
+          "risk_tolerance": 4,
+          "dependents": 2
+        },
+        "optimal_allocation": {
+          "large_cap_equity": 0.291,
+          "mid_small_cap_equity": 0.159,
+          "international_equity": 0.079,
+          "government_bonds": 0.271,
+          "corporate_bonds": 0.113,
+          "gold": 0.068,
+          "cash_equivalents": 0.02
+        },
+        "portfolio_metrics": {
+          "expected_return": 0.102,
+          "portfolio_risk": 0.064,
+          "risk_score": 0.32,
+          "sharpe_ratio": 0.58,
+          "risk_free_rate": 0.065
+        },
+        "investment_insights": {
+          "goal_strategy": {
+            "answer": "According to Income Tax Department, PFRDA, Financial Planning Standards Board, SEBI, Securities and Exchange Board of India (SEBI) investor education guidelines suggest age-based asset allocation strategy. This strategy balances growth potential with risk management based on your investment horizon.",
+            "confidence": 0.794,
+            "sources": [
+              "Personal Finance Best Practices India",
+              "Pension Fund Regulatory Authority Guidelines",
+              "Income Tax Act 1961, Section 80C",
+              "SEBI Investor Education and Protection Fund Guidelines",
+              "Processed in 0.04s"
+            ]
+          },
+          "tax_optimization": {
+            "answer": "According to Income Tax Department, AMFI, Financial Planning Standards Board, SEBI, Eligible investments include Equity Linked Savings Scheme (ELSS), Public Provident Fund (PPF), Employee Provident Fund (EPF), life insurance premiums, home loan principal repayment, National Savings Certificate (NSC), and tax-saving fixed deposits. This strategy balances growth potential with risk management based on your investment horizon.",
+            "confidence": 0.763,
+            "sources": [
+              "Personal Finance Best Practices India",
+              "AMFI Investor Education Guidelines",
+              "Income Tax Act 1961, Section 80C",
+              "SEBI Investor Education and Protection Fund Guidelines",
+              "SEBI Guidelines on Gold Investment",
+              "Processed in 0.03s"
+            ]
+          }
+        },
+        "rebalancing": {
+          "rebalancing_needed": true,
+          "max_drift_pct": 1.0,
+          "threshold_used": 0.05,
+          "actions_required": [
+            {
+              "asset": "large_cap_equity",
+              "action": "decrease",
+              "current": 0.5,
+              "target": 0.291,
+              "drift_pct": 0.718,
+              "amount_change": 0.209
+            },
+            {
+              "asset": "mid_small_cap_equity",
+              "action": "increase",
+              "current": 0,
+              "target": 0.159,
+              "drift_pct": 1.0,
+              "amount_change": 0.159
+            },
+            {
+              "asset": "international_equity",
+              "action": "increase",
+              "current": 0,
+              "target": 0.079,
+              "drift_pct": 1.0,
+              "amount_change": 0.079
+            },
+            {
+              "asset": "government_bonds",
+              "action": "increase",
+              "current": 0,
+              "target": 0.271,
+              "drift_pct": 1.0,
+              "amount_change": 0.271
+            },
+            {
+              "asset": "corporate_bonds",
+              "action": "increase",
+              "current": 0,
+              "target": 0.113,
+              "drift_pct": 1.0,
+              "amount_change": 0.113
+            },
+            {
+              "asset": "gold",
+              "action": "increase",
+              "current": 0,
+              "target": 0.068,
+              "drift_pct": 1.0,
+              "amount_change": 0.068
+            },
+            {
+              "asset": "cash_equivalents",
+              "action": "increase",
+              "current": 0,
+              "target": 0.02,
+              "drift_pct": 1.0,
+              "amount_change": 0.02
+            }
+          ],
+          "priority": "high",
+          "estimated_cost": 0.007,
+          "next_review_days": 30
+        },
+        "recommendations": {
+          "immediate_actions": [
+            "Rebalancing required - 7 assets need adjustment"
+          ],
+          "periodic_reviews": "Quarterly rebalancing review recommended",
+          "risk_monitoring": "Monitor portfolio drift > 5% threshold",
+          "tax_planning": "Consider tax-loss harvesting opportunities"
+        },
+        "performance": {
+          "processing_time_seconds": 0.0741,
+          "target_met": true,
+          "target_threshold": 0.1
+        },
+        "timestamp": "2025-09-26T14:27:02.366510"
+      }
+    }
+  ]
+}

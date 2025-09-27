@@ -1,0 +1,45 @@
+
+services:
+  fastapi1-multilingual:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - HF_TOKEN=${HF_TOKEN}
+      - FASTAPI2_URL=http://fastapi2-finance:8001
+    volumes:
+      - ./models:/app/models  # Cache models
+      - ./fastapi1_multilingual.py:/app/fastapi1_multilingual.py  # Live code updates
+    depends_on:
+      - fastapi2-finance
+    networks:
+      - finvoice-network
+
+  fastapi2-finance:
+    build:
+      context: .
+      dockerfile: Dockerfile.finance
+    ports:
+      - "8001:8001"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - HF_TOKEN=${HF_TOKEN}
+    volumes:
+      - ./chroma_financial_db:/app/chroma_financial_db  # Persist database
+      - ./fastapi2_finance.py:/app/fastapi2_finance.py  # Live code updates
+      - ./requirements.txt:/app/requirements.txt  # Live requirements updates
+    networks:
+      - finvoice-network
+
+networks:
+  finvoice-network:
+    driver: bridge
+
+volumes:
+  models:
+  chroma_db:

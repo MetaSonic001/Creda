@@ -1,0 +1,68 @@
+# FastAPI and web framework
+fastapi
+uvicorn[standard]
+
+# Audio processing
+librosa
+soundfile
+gtts
+
+# AI/ML models
+torch
+torchvision
+torchaudio
+transformers
+sentence-transformers
+
+# Data science
+numpy
+pandas
+scikit-learn
+joblib
+
+# Vector database and RAG
+chromadb
+langchain
+
+# LLM APIs
+google-generativeai
+groq
+openai
+
+# HTTP requests
+requests
+httpx
+
+# Data validation
+pydantic
+
+# Environment variables
+python-dotenv
+
+# Additional utilities
+python-multipart
+jinja2
+
+# Optional: For production deployment
+gunicorn
+
+# For audio format conversion (optional)
+pydub
+
+# AI4Bharat specific dependencies
+IndicTransToolkit
+indic-nlp-library
+sacremoses
+
+# Advanced TTS
+edge-tts
+
+# Audio validation
+pydub
+
+# Language detection
+langdetect
+polyglot
+
+sentence_transformers
+sentencepiece

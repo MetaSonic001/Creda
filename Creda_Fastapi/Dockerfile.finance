@@ -1,0 +1,39 @@
+# FastAPI 2 - Finance Service  
+FROM python:3.10-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies (cached layer)
+RUN apt-get update && apt-get install -y \
+    sqlite3 \
+    curl \
+    build-essential \
+    python3-dev \
+    git \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir --upgrade pip
+
+# Copy and install requirements (only rebuilds if requirements.txt changes)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Create data directories (cached)
+RUN mkdir -p /app/chroma_financial_db /app/logs
+
+# Copy environment files (rarely change)
+COPY .env* ./
+
+# Copy application code LAST (most frequently changed)
+COPY fastapi2_finance.py .
+
+# Expose port
+EXPOSE 8001
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8001/health || exit 1
+
+# Run the application with reload for development
+CMD ["uvicorn", "fastapi2_finance:app", "--host", "0.0.0.0", "--port", "8001", "--reload"]

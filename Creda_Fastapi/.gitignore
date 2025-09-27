@@ -1,0 +1,160 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Virtual environments
+.env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# AI Models and Cache
+models/
+*.bin
+*.safetensors
+.cache/
+.huggingface/
+transformers_cache/
+torch_cache/
+whisper_cache/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+chroma_db/
+chroma_financial_db/
+postgres_data/
+redis_data/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+*.tmp
+
+# Local environment files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# API Keys (security)
+*.key
+*.pem
+secrets/
+
+# Data files
+data/
+uploads/
+downloads/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# ML/AI specific
+wandb/
+mlruns/
+experiments/
+checkpoints/
+
+# UV specific
+.uv/
+uv.lock
+
+# Node.js (if any frontend tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Documentation builds
+_build/
+docs/_build/
+
+# Local configuration
+config.local.yml
+config.local.json
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+*.7z
