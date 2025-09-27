@@ -995,7 +995,33 @@ async def test_asr_model():
         return model_info
     
     except Exception as e:
+
         return {"error": str(e), "test_status": "failed"}
+
+
+
+# --- Fast audio transcription endpoint ---
+@app.post("/transcribe_audio")
+async def transcribe_audio(audio: UploadFile = File(...)):
+    """
+    Fast endpoint: Transcribe uploaded audio file to text with minimal latency.
+    Returns transcription and metadata (detected language, confidence, model, etc).
+    """
+    try:
+        result = await speech_to_text(audio)
+        return {
+            "transcription": result["transcription"],
+            "detected_language": result["detected_language"],
+            "confidence": result["confidence"],
+            "model_used": result["model_used"],
+            "processing_time": result["processing_time"],
+            "audio_quality": result["audio_quality"],
+            "language_confidence": result["language_confidence"]
+        }
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Transcription failed: {str(e)}")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
