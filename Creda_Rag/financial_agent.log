@@ -28,3 +28,23 @@
 2025-09-26 20:23:16.363 | INFO     | __main__:add_stock_data:966 - Added/Updated 10 stock analysis documents
 2025-09-26 20:23:16.982 | INFO     | __main__:add_fund_data:1033 - Added/Updated 8 mutual fund analysis documents
 2025-09-26 20:23:16.983 | SUCCESS  | __main__:populate_knowledge_base:502 - Financial knowledge base populated successfully!
+2025-09-27 11:06:29.789 | INFO     | __main__:setup_collections:473 - ChromaDB collections setup (created if not exist)
+2025-09-27 11:06:29.802 | INFO     | __main__:setup_database:105 - SQLite database setup completed
+2025-09-27 11:06:29.803 | INFO     | __main__:__init__:439 - ChromaDB initialized successfully
+2025-09-27 11:06:29.803 | INFO     | __main__:populate_knowledge_base:477 - Populating financial knowledge base...
+2025-09-27 11:06:32.947 | INFO     | __main__:add_curated_knowledge:806 - Added 23 general financial knowledge items
+2025-09-27 11:06:32.947 | INFO     | __main__:add_curated_knowledge:807 - Added 2 tax-specific knowledge items
+2025-09-27 11:06:32.947 | INFO     | __main__:add_curated_knowledge:808 - Added 2 investment-specific knowledge items
+2025-09-27 11:06:32.948 | INFO     | __main__:fetch_indian_stock_data:224 - Fetching Indian stock market data...
+2025-09-27 11:06:40.817 | INFO     | __main__:fetch_indian_stock_data:280 - Processed data for 10 stocks
+2025-09-27 11:06:40.818 | INFO     | __main__:fetch_mutual_fund_data:333 - Loading mutual fund data...
+2025-09-27 11:06:52.316 | INFO     | __main__:crawl_financial_websites:151 - Skipping https://www.moneycontrol.com/news/business/personal-finance/ - recently crawled
+2025-09-27 11:06:52.320 | INFO     | __main__:crawl_financial_websites:151 - Skipping https://economictimes.indiatimes.com/wealth - recently crawled
+2025-09-27 11:06:52.322 | INFO     | __main__:crawl_financial_websites:151 - Skipping https://www.livemint.com/money - recently crawled
+2025-09-27 11:06:52.323 | INFO     | __main__:crawl_financial_websites:151 - Skipping https://cleartax.in/s/income-tax-guide - recently crawled
+2025-09-27 11:06:52.324 | INFO     | __main__:crawl_financial_websites:151 - Skipping https://groww.in/blog/category/tax - recently crawled
+2025-09-27 11:06:53.078 | INFO     | __main__:process_crawled_data:878 - Added/Updated 2 tax-related crawled documents
+2025-09-27 11:06:53.488 | INFO     | __main__:process_crawled_data:889 - Added/Updated 3 general crawled documents
+2025-09-27 11:06:54.182 | INFO     | __main__:add_stock_data:966 - Added/Updated 10 stock analysis documents
+2025-09-27 11:06:54.811 | INFO     | __main__:add_fund_data:1033 - Added/Updated 8 mutual fund analysis documents
+2025-09-27 11:06:54.811 | SUCCESS  | __main__:populate_knowledge_base:502 - Financial knowledge base populated successfully!

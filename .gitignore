@@ -1,5 +1,5 @@
-/rag/chroma_financial_db
-bun.lock
+/Creda_Rag/chroma_financial_db
+
 .env
 
-\frontend\finvoice-web\node_modules
+/Creda_Web//node_modules
