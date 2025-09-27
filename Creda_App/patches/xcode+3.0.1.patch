@@ -1,0 +1,656 @@
+diff --git a/node_modules/xcode/lib/pbxProject.js b/node_modules/xcode/lib/pbxProject.js
+index 068548a..5b48a8d 100644
+--- a/node_modules/xcode/lib/pbxProject.js
++++ b/node_modules/xcode/lib/pbxProject.js
+@@ -157,7 +157,7 @@ pbxProject.prototype.removeProductFile = function(path, opt) {
+  * @param group {String} group key
+  * @returns {Object} file; see pbxFile
+  */
+-pbxProject.prototype.addSourceFile = function (path, opt, group) {
++pbxProject.prototype.addSourceFile = function(path, opt, group) {
+     var file;
+     if (group) {
+         file = this.addFile(path, group, opt);
+@@ -184,7 +184,7 @@ pbxProject.prototype.addSourceFile = function (path, opt, group) {
+  * @param group {String} group key
+  * @returns {Object} file; see pbxFile
+  */
+-pbxProject.prototype.removeSourceFile = function (path, opt, group) {
++pbxProject.prototype.removeSourceFile = function(path, opt, group) {
+     var file;
+     if (group) {
+         file = this.removeFile(path, group, opt);
+@@ -206,7 +206,7 @@ pbxProject.prototype.removeSourceFile = function (path, opt, group) {
+  * @param group {String} group key
+  * @returns {Object} file; see pbxFile
+  */
+-pbxProject.prototype.addHeaderFile = function (path, opt, group) {
++pbxProject.prototype.addHeaderFile = function(path, opt, group) {
+     if (group) {
+         return this.addFile(path, group, opt);
+     }
+@@ -222,7 +222,7 @@ pbxProject.prototype.addHeaderFile = function (path, opt, group) {
+  * @param group {String} group key
+  * @returns {Object} file; see pbxFile
+  */
+-pbxProject.prototype.removeHeaderFile = function (path, opt, group) {
++pbxProject.prototype.removeHeaderFile = function(path, opt, group) {
+     if (group) {
+         return this.removeFile(path, group, opt);
+     }
+@@ -320,7 +320,7 @@ pbxProject.prototype.addFramework = function(fpath, opt) {
+     var embed = opt && opt.embed;                              //defaults to false if not specified
+ 
+     if (opt) {
+-      delete opt.embed;
++        delete opt.embed;
+     }
+ 
+     var file = new pbxFile(fpath, opt);
+@@ -336,25 +336,25 @@ pbxProject.prototype.addFramework = function(fpath, opt) {
+     this.addToFrameworksPbxGroup(file);         // PBXGroup
+ 
+     if (link) {
+-      this.addToPbxFrameworksBuildPhase(file);    // PBXFrameworksBuildPhase
++        this.addToPbxFrameworksBuildPhase(file);    // PBXFrameworksBuildPhase
+     }
+ 
+     if (customFramework) {
+         this.addToFrameworkSearchPaths(file);
+ 
+         if (embed) {
+-          opt.embed = embed;
+-          var embeddedFile = new pbxFile(fpath, opt);
++            opt.embed = embed;
++            var embeddedFile = new pbxFile(fpath, opt);
+ 
+-          embeddedFile.uuid = this.generateUuid();
+-          embeddedFile.fileRef = file.fileRef;
++            embeddedFile.uuid = this.generateUuid();
++            embeddedFile.fileRef = file.fileRef;
+ 
+-          //keeping a separate PBXBuildFile entry for Embed Frameworks
+-          this.addToPbxBuildFileSection(embeddedFile);        // PBXBuildFile
++            //keeping a separate PBXBuildFile entry for Embed Frameworks
++            this.addToPbxBuildFileSection(embeddedFile);        // PBXBuildFile
+ 
+-          this.addToPbxEmbedFrameworksBuildPhase(embeddedFile); // PBXCopyFilesBuildPhase
++            this.addToPbxEmbedFrameworksBuildPhase(embeddedFile); // PBXCopyFilesBuildPhase
+ 
+-          return embeddedFile;
++            return embeddedFile;
+         }
+     }
+ 
+@@ -365,7 +365,7 @@ pbxProject.prototype.removeFramework = function(fpath, opt) {
+     var embed = opt && opt.embed;
+ 
+     if (opt) {
+-      delete opt.embed;
++        delete opt.embed;
+     }
+ 
+     var file = new pbxFile(fpath, opt);
+@@ -542,7 +542,7 @@ pbxProject.prototype.addPbxGroup = function(filePathsArray, name, path, sourceTr
+     return { uuid: pbxGroupUuid, pbxGroup: pbxGroup };
+ }
+ 
+-pbxProject.prototype.removePbxGroup = function (groupName) {
++pbxProject.prototype.removePbxGroup = function(groupName) {
+     var section = this.hash.project.objects['PBXGroup'],
+         key, itemKey;
+ 
+@@ -560,9 +560,9 @@ pbxProject.prototype.removePbxGroup = function (groupName) {
+ pbxProject.prototype.addToPbxProjectSection = function(target) {
+ 
+     var newTarget = {
+-            value: target.uuid,
+-            comment: pbxNativeTargetComment(target.pbxNativeTarget)
+-        };
++        value: target.uuid,
++        comment: pbxNativeTargetComment(target.pbxNativeTarget)
++    };
+ 
+     this.pbxProjectSection()[this.getFirstProject()['uuid']]['targets'].push(newTarget);
+ }
+@@ -613,7 +613,7 @@ pbxProject.prototype.addToXcVersionGroupSection = function(file) {
+     if (!this.xcVersionGroupSection()[file.fileRef]) {
+         this.xcVersionGroupSection()[file.fileRef] = {
+             isa: 'XCVersionGroup',
+-            children: file.models.map(function (el) { return el.fileRef; }),
++            children: file.models.map(function(el) { return el.fileRef; }),
+             currentVersion: file.currentModel.fileRef,
+             name: path.basename(file.path),
+             path: file.path,
+@@ -694,14 +694,14 @@ pbxProject.prototype.removeFromFrameworksPbxGroup = function(file) {
+     }
+ }
+ 
+-pbxProject.prototype.addToPbxEmbedFrameworksBuildPhase = function (file) {
++pbxProject.prototype.addToPbxEmbedFrameworksBuildPhase = function(file) {
+     var sources = this.pbxEmbedFrameworksBuildPhaseObj(file.target);
+     if (sources) {
+         sources.files.push(pbxBuildPhaseObj(file));
+     }
+ }
+ 
+-pbxProject.prototype.removeFromPbxEmbedFrameworksBuildPhase = function (file) {
++pbxProject.prototype.removeFromPbxEmbedFrameworksBuildPhase = function(file) {
+     var sources = this.pbxEmbedFrameworksBuildPhaseObj(file.target);
+     if (sources) {
+         var files = [];
+@@ -827,7 +827,7 @@ pbxProject.prototype.addTargetDependency = function(target, dependencyTargets) {
+         var dependencyTarget = dependencyTargets[index];
+         if (typeof nativeTargets[dependencyTarget] == "undefined")
+             throw new Error("Invalid target: " + dependencyTarget);
+-        }
++    }
+ 
+     var pbxTargetDependency = 'PBXTargetDependency',
+         pbxContainerItemProxy = 'PBXContainerItemProxy',
+@@ -971,7 +971,7 @@ pbxProject.prototype.pbxNativeTargetSection = function() {
+     return this.hash.project.objects['PBXNativeTarget'];
+ }
+ 
+-pbxProject.prototype.xcVersionGroupSection = function () {
++pbxProject.prototype.xcVersionGroupSection = function() {
+     if (typeof this.hash.project.objects['XCVersionGroup'] !== 'object') {
+         this.hash.project.objects['XCVersionGroup'] = {};
+     }
+@@ -1049,7 +1049,7 @@ pbxProject.prototype.pbxFrameworksBuildPhaseObj = function(target) {
+     return this.buildPhaseObject('PBXFrameworksBuildPhase', 'Frameworks', target);
+ }
+ 
+-pbxProject.prototype.pbxEmbedFrameworksBuildPhaseObj = function (target) {
++pbxProject.prototype.pbxEmbedFrameworksBuildPhaseObj = function(target) {
+     return this.buildPhaseObject('PBXCopyFilesBuildPhase', 'Embed Frameworks', target);
+ };
+ 
+@@ -1060,18 +1060,17 @@ pbxProject.prototype.buildPhase = function(group, target) {
+         return undefined;
+ 
+     var nativeTargets = this.pbxNativeTargetSection();
+-     if (typeof nativeTargets[target] == "undefined")
++    if (typeof nativeTargets[target] == "undefined")
+         throw new Error("Invalid target: " + target);
+ 
+     var nativeTarget = nativeTargets[target];
+     var buildPhases = nativeTarget.buildPhases;
+-     for(var i in buildPhases)
+-     {
++    for (var i in buildPhases) {
+         var buildPhase = buildPhases[i];
+-        if (buildPhase.comment==group)
++        if (buildPhase.comment == group)
+             return buildPhase.value + "_comment";
+-        }
+     }
++}
+ 
+ pbxProject.prototype.buildPhaseObject = function(name, group, target) {
+     var section = this.hash.project.objects[name],
+@@ -1084,7 +1083,7 @@ pbxProject.prototype.buildPhaseObject = function(name, group, target) {
+         if (!COMMENT_KEY.test(key)) continue;
+ 
+         // select the proper buildPhase
+-        if (buildPhase && buildPhase!=key)
++        if (buildPhase && buildPhase != key)
+             continue;
+         if (section[key] == group) {
+             sectionKey = key.split(COMMENT_KEY)[0];
+@@ -1098,9 +1097,9 @@ pbxProject.prototype.addBuildProperty = function(prop, value, build_name) {
+     var configurations = nonComments(this.pbxXCBuildConfigurationSection()),
+         key, configuration;
+ 
+-    for (key in configurations){
++    for (key in configurations) {
+         configuration = configurations[key];
+-        if (!build_name || configuration.name === build_name){
++        if (!build_name || configuration.name === build_name) {
+             configuration.buildSettings[prop] = value;
+         }
+     }
+@@ -1110,10 +1109,10 @@ pbxProject.prototype.removeBuildProperty = function(prop, build_name) {
+     var configurations = nonComments(this.pbxXCBuildConfigurationSection()),
+         key, configuration;
+ 
+-    for (key in configurations){
++    for (key in configurations) {
+         configuration = configurations[key];
+         if (configuration.buildSettings[prop] &&
+-            !build_name || configuration.name === build_name){
++            !build_name || configuration.name === build_name) {
+             delete configuration.buildSettings[prop];
+         }
+     }
+@@ -1129,7 +1128,7 @@ pbxProject.prototype.removeBuildProperty = function(prop, build_name) {
+ pbxProject.prototype.updateBuildProperty = function(prop, value, build, targetName) {
+     let validConfigs = [];
+ 
+-    if(targetName) {
++    if (targetName) {
+         const target = this.pbxTargetByName(targetName);
+         const targetBuildConfigs = target && target.buildConfigurationList;
+ 
+@@ -1155,7 +1154,7 @@ pbxProject.prototype.updateBuildProperty = function(prop, value, build, targetNa
+             if (targetName && !validConfigs.includes(configName)) continue;
+ 
+             var config = configs[configName];
+-            if ( (build && config.name === build) || (!build) ) {
++            if ((build && config.name === build) || (!build)) {
+                 config.buildSettings[prop] = value;
+             }
+         }
+@@ -1313,7 +1312,7 @@ pbxProject.prototype.addToHeaderSearchPaths = function(file) {
+     }
+ }
+ 
+-pbxProject.prototype.addToOtherLinkerFlags = function (flag) {
++pbxProject.prototype.addToOtherLinkerFlags = function(flag) {
+     var configurations = nonComments(this.pbxXCBuildConfigurationSection()),
+         INHERITED = '"$(inherited)"',
+         OTHER_LDFLAGS = 'OTHER_LDFLAGS',
+@@ -1326,7 +1325,7 @@ pbxProject.prototype.addToOtherLinkerFlags = function (flag) {
+             continue;
+ 
+         if (!buildSettings[OTHER_LDFLAGS]
+-                || buildSettings[OTHER_LDFLAGS] === INHERITED) {
++            || buildSettings[OTHER_LDFLAGS] === INHERITED) {
+             buildSettings[OTHER_LDFLAGS] = [INHERITED];
+         }
+ 
+@@ -1334,7 +1333,7 @@ pbxProject.prototype.addToOtherLinkerFlags = function (flag) {
+     }
+ }
+ 
+-pbxProject.prototype.removeFromOtherLinkerFlags = function (flag) {
++pbxProject.prototype.removeFromOtherLinkerFlags = function(flag) {
+     var configurations = nonComments(this.pbxXCBuildConfigurationSection()),
+         OTHER_LDFLAGS = 'OTHER_LDFLAGS',
+         config, buildSettings;
+@@ -1347,10 +1346,10 @@ pbxProject.prototype.removeFromOtherLinkerFlags = function (flag) {
+         }
+ 
+         if (buildSettings[OTHER_LDFLAGS]) {
+-            var matches = buildSettings[OTHER_LDFLAGS].filter(function (p) {
++            var matches = buildSettings[OTHER_LDFLAGS].filter(function(p) {
+                 return p.indexOf(flag) > -1;
+             });
+-            matches.forEach(function (m) {
++            matches.forEach(function(m) {
+                 var idx = buildSettings[OTHER_LDFLAGS].indexOf(m);
+                 buildSettings[OTHER_LDFLAGS].splice(idx, 1);
+             });
+@@ -1358,7 +1357,7 @@ pbxProject.prototype.removeFromOtherLinkerFlags = function (flag) {
+     }
+ }
+ 
+-pbxProject.prototype.addToBuildSettings = function (buildSetting, value) {
++pbxProject.prototype.addToBuildSettings = function(buildSetting, value) {
+     var configurations = nonComments(this.pbxXCBuildConfigurationSection()),
+         config, buildSettings;
+ 
+@@ -1369,7 +1368,7 @@ pbxProject.prototype.addToBuildSettings = function (buildSetting, value) {
+     }
+ }
+ 
+-pbxProject.prototype.removeFromBuildSettings = function (buildSetting) {
++pbxProject.prototype.removeFromBuildSettings = function(buildSetting) {
+     var configurations = nonComments(this.pbxXCBuildConfigurationSection()),
+         config, buildSettings;
+ 
+@@ -1468,13 +1467,13 @@ pbxProject.prototype.addTarget = function(name, type, subfolder, bundleId) {
+     }
+ 
+     // Build Configuration: Add
+-    var buildConfigurations = this.addXCConfigurationList(buildConfigurationsList, 'Release', 'Build configuration list for PBXNativeTarget "' + targetName +'"');
++    var buildConfigurations = this.addXCConfigurationList(buildConfigurationsList, 'Release', 'Build configuration list for PBXNativeTarget "' + targetName + '"');
+ 
+     // Product: Create
+     var productName = targetName,
+         productType = producttypeForTargettype(targetType),
+         productFileType = filetypeForProducttype(productType),
+-        productFile = this.addProductFile(productName, { group: 'Copy Files', 'target': targetUuid, 'explicitFileType': productFileType}),
++        productFile = this.addProductFile(productName, { group: 'Copy Files', 'target': targetUuid, 'explicitFileType': productFileType }),
+         productFileName = productFile.basename;
+ 
+ 
+@@ -1483,18 +1482,18 @@ pbxProject.prototype.addTarget = function(name, type, subfolder, bundleId) {
+ 
+     // Target: Create
+     var target = {
+-            uuid: targetUuid,
+-            pbxNativeTarget: {
+-                isa: 'PBXNativeTarget',
+-                name: '"' + targetName + '"',
+-                productName: '"' + targetName + '"',
+-                productReference: productFile.fileRef,
+-                productType: '"' + producttypeForTargettype(targetType) + '"',
+-                buildConfigurationList: buildConfigurations.uuid,
+-                buildPhases: [],
+-                buildRules: [],
+-                dependencies: []
+-            }
++        uuid: targetUuid,
++        pbxNativeTarget: {
++            isa: 'PBXNativeTarget',
++            name: '"' + targetName + '"',
++            productName: '"' + targetName + '"',
++            productReference: productFile.fileRef,
++            productType: '"' + producttypeForTargettype(targetType) + '"',
++            buildConfigurationList: buildConfigurations.uuid,
++            buildPhases: [],
++            buildRules: [],
++            dependencies: []
++        }
+     };
+ 
+     // Target: Add to PBXNativeTarget section
+@@ -1504,12 +1503,12 @@ pbxProject.prototype.addTarget = function(name, type, subfolder, bundleId) {
+     if (targetType === 'app_extension') {
+ 
+         // Create CopyFiles phase in first target
+-        this.addBuildPhase([], 'PBXCopyFilesBuildPhase', 'Copy Files', this.getFirstTarget().uuid,  targetType)
++        this.addBuildPhase([], 'PBXCopyFilesBuildPhase', 'Copy Files', this.getFirstTarget().uuid, targetType)
+ 
+         // Add product to CopyFiles phase
+         this.addToPbxCopyfilesBuildPhase(productFile)
+ 
+-       // this.addBuildPhaseToTarget(newPhase.buildPhase, this.getFirstTarget().uuid)
++        // this.addBuildPhaseToTarget(newPhase.buildPhase, this.getFirstTarget().uuid)
+     } else if (targetType === 'watch2_app') {
+         // Create CopyFiles phase in first target
+         this.addBuildPhase(
+@@ -1600,7 +1599,7 @@ function pbxBuildPhaseObj(file) {
+ 
+ function pbxCopyFilesBuildPhaseObj(obj, folderType, subfolderPath, phaseName) {
+ 
+-     // Add additional properties for 'CopyFiles' build phase
++    // Add additional properties for 'CopyFiles' build phase
+     var DESTINATION_BY_TARGETTYPE = {
+         application: 'wrapper',
+         app_extension: 'plugins',
+@@ -1677,10 +1676,14 @@ function correctForFrameworksPath(file, project) {
+ }
+ 
+ function correctForPath(file, project, group) {
++    if (!file || !file.path) return file;   // guard against null file
++
+     var r_group_dir = new RegExp('^' + group + '[\\\\/]');
++    const pbxGroup = project.pbxGroupByName(group);
+ 
+-    if (project.pbxGroupByName(group).path)
++    if (pbxGroup && pbxGroup.path) {
+         file.path = file.path.replace(r_group_dir, '');
++    }
+ 
+     return file;
+ }
+@@ -1723,7 +1726,7 @@ function unquote(str) {
+ }
+ 
+ 
+-function buildPhaseNameForIsa (isa) {
++function buildPhaseNameForIsa(isa) {
+ 
+     BUILDPHASENAME_BY_ISA = {
+         PBXCopyFilesBuildPhase: 'Copy Files',
+@@ -1735,42 +1738,42 @@ function buildPhaseNameForIsa (isa) {
+     return BUILDPHASENAME_BY_ISA[isa]
+ }
+ 
+-function producttypeForTargettype (targetType) {
++function producttypeForTargettype(targetType) {
+ 
+     PRODUCTTYPE_BY_TARGETTYPE = {
+-            application: 'com.apple.product-type.application',
+-            app_extension: 'com.apple.product-type.app-extension',
+-            bundle: 'com.apple.product-type.bundle',
+-            command_line_tool: 'com.apple.product-type.tool',
+-            dynamic_library: 'com.apple.product-type.library.dynamic',
+-            framework: 'com.apple.product-type.framework',
+-            static_library: 'com.apple.product-type.library.static',
+-            unit_test_bundle: 'com.apple.product-type.bundle.unit-test',
+-            watch_app: 'com.apple.product-type.application.watchapp',
+-            watch2_app: 'com.apple.product-type.application.watchapp2',
+-            watch_extension: 'com.apple.product-type.watchkit-extension',
+-            watch2_extension: 'com.apple.product-type.watchkit2-extension'
+-        };
++        application: 'com.apple.product-type.application',
++        app_extension: 'com.apple.product-type.app-extension',
++        bundle: 'com.apple.product-type.bundle',
++        command_line_tool: 'com.apple.product-type.tool',
++        dynamic_library: 'com.apple.product-type.library.dynamic',
++        framework: 'com.apple.product-type.framework',
++        static_library: 'com.apple.product-type.library.static',
++        unit_test_bundle: 'com.apple.product-type.bundle.unit-test',
++        watch_app: 'com.apple.product-type.application.watchapp',
++        watch2_app: 'com.apple.product-type.application.watchapp2',
++        watch_extension: 'com.apple.product-type.watchkit-extension',
++        watch2_extension: 'com.apple.product-type.watchkit2-extension'
++    };
+ 
+     return PRODUCTTYPE_BY_TARGETTYPE[targetType]
+ }
+ 
+-function filetypeForProducttype (productType) {
++function filetypeForProducttype(productType) {
+ 
+     FILETYPE_BY_PRODUCTTYPE = {
+-            'com.apple.product-type.application': '"wrapper.application"',
+-            'com.apple.product-type.app-extension': '"wrapper.app-extension"',
+-            'com.apple.product-type.bundle': '"wrapper.plug-in"',
+-            'com.apple.product-type.tool': '"compiled.mach-o.dylib"',
+-            'com.apple.product-type.library.dynamic': '"compiled.mach-o.dylib"',
+-            'com.apple.product-type.framework': '"wrapper.framework"',
+-            'com.apple.product-type.library.static': '"archive.ar"',
+-            'com.apple.product-type.bundle.unit-test': '"wrapper.cfbundle"',
+-            'com.apple.product-type.application.watchapp': '"wrapper.application"',
+-            'com.apple.product-type.application.watchapp2': '"wrapper.application"',
+-            'com.apple.product-type.watchkit-extension': '"wrapper.app-extension"',
+-            'com.apple.product-type.watchkit2-extension': '"wrapper.app-extension"'
+-        };
++        'com.apple.product-type.application': '"wrapper.application"',
++        'com.apple.product-type.app-extension': '"wrapper.app-extension"',
++        'com.apple.product-type.bundle': '"wrapper.plug-in"',
++        'com.apple.product-type.tool': '"compiled.mach-o.dylib"',
++        'com.apple.product-type.library.dynamic': '"compiled.mach-o.dylib"',
++        'com.apple.product-type.framework': '"wrapper.framework"',
++        'com.apple.product-type.library.static': '"archive.ar"',
++        'com.apple.product-type.bundle.unit-test': '"wrapper.cfbundle"',
++        'com.apple.product-type.application.watchapp': '"wrapper.application"',
++        'com.apple.product-type.application.watchapp2': '"wrapper.application"',
++        'com.apple.product-type.watchkit-extension': '"wrapper.app-extension"',
++        'com.apple.product-type.watchkit2-extension': '"wrapper.app-extension"'
++    };
+ 
+     return FILETYPE_BY_PRODUCTTYPE[productType]
+ }
+@@ -1786,7 +1789,7 @@ pbxProject.prototype.getFirstProject = function() {
+     // Get first pbxProject
+     var firstProject = pbxProjectContainer[firstProjectUuid];
+ 
+-     return {
++    return {
+         uuid: firstProjectUuid,
+         firstProject: firstProject
+     }
+@@ -1827,13 +1830,13 @@ pbxProject.prototype.getTarget = function(productType) {
+ 
+ /*** NEW ***/
+ 
+-pbxProject.prototype.addToPbxGroupType = function (file, groupKey, groupType) {
++pbxProject.prototype.addToPbxGroupType = function(file, groupKey, groupType) {
+     var group = this.getPBXGroupByKeyAndType(groupKey, groupType);
+     if (group && group.children !== undefined) {
+         if (typeof file === 'string') {
+             //Group Key
+             var childGroup = {
+-                value:file,
++                value: file,
+             };
+             if (this.getPBXGroupByKey(file)) {
+                 childGroup.comment = this.getPBXGroupByKey(file).name;
+@@ -1851,11 +1854,11 @@ pbxProject.prototype.addToPbxGroupType = function (file, groupKey, groupType) {
+     }
+ }
+ 
+-pbxProject.prototype.addToPbxVariantGroup = function (file, groupKey) {
++pbxProject.prototype.addToPbxVariantGroup = function(file, groupKey) {
+     this.addToPbxGroupType(file, groupKey, 'PBXVariantGroup');
+ }
+ 
+-pbxProject.prototype.addToPbxGroup = function (file, groupKey) {
++pbxProject.prototype.addToPbxGroup = function(file, groupKey) {
+     this.addToPbxGroupType(file, groupKey, 'PBXGroup');
+ }
+ 
+@@ -1896,12 +1899,12 @@ pbxProject.prototype.pbxCreateGroup = function(name, pathName) {
+ 
+ 
+ 
+-pbxProject.prototype.removeFromPbxGroupAndType = function (file, groupKey, groupType) {
++pbxProject.prototype.removeFromPbxGroupAndType = function(file, groupKey, groupType) {
+     var group = this.getPBXGroupByKeyAndType(groupKey, groupType);
+     if (group) {
+         var groupChildren = group.children, i;
+-        for(i in groupChildren) {
+-            if(pbxGroupChild(file).value == groupChildren[i].value &&
++        for (i in groupChildren) {
++            if (pbxGroupChild(file).value == groupChildren[i].value &&
+                 pbxGroupChild(file).comment == groupChildren[i].comment) {
+                 groupChildren.splice(i, 1);
+                 break;
+@@ -1910,11 +1913,11 @@ pbxProject.prototype.removeFromPbxGroupAndType = function (file, groupKey, group
+     }
+ }
+ 
+-pbxProject.prototype.removeFromPbxGroup = function (file, groupKey) {
++pbxProject.prototype.removeFromPbxGroup = function(file, groupKey) {
+     this.removeFromPbxGroupAndType(file, groupKey, 'PBXGroup');
+ }
+ 
+-pbxProject.prototype.removeFromPbxVariantGroup = function (file, groupKey) {
++pbxProject.prototype.removeFromPbxVariantGroup = function(file, groupKey) {
+     this.removeFromPbxGroupAndType(file, groupKey, 'PBXVariantGroup');
+ }
+ 
+@@ -1977,7 +1980,7 @@ pbxProject.prototype.findPBXVariantGroupKey = function(criteria) {
+ pbxProject.prototype.addLocalizationVariantGroup = function(name) {
+     var groupKey = this.pbxCreateVariantGroup(name);
+ 
+-    var resourceGroupKey = this.findPBXGroupKey({name: 'Resources'});
++    var resourceGroupKey = this.findPBXGroupKey({ name: 'Resources' });
+     this.addToPbxGroup(groupKey, resourceGroupKey);
+ 
+     var localizationVariantGroup = {
+@@ -1991,38 +1994,38 @@ pbxProject.prototype.addLocalizationVariantGroup = function(name) {
+     return localizationVariantGroup;
+ };
+ 
+-pbxProject.prototype.addKnownRegion = function (name) {
+-  if (!this.pbxProjectSection()[this.getFirstProject()['uuid']]['knownRegions']) {
+-    this.pbxProjectSection()[this.getFirstProject()['uuid']]['knownRegions'] = [];
+-  }
+-  if (!this.hasKnownRegion(name)) {
+-    this.pbxProjectSection()[this.getFirstProject()['uuid']]['knownRegions'].push(name);
+-  }
++pbxProject.prototype.addKnownRegion = function(name) {
++    if (!this.pbxProjectSection()[this.getFirstProject()['uuid']]['knownRegions']) {
++        this.pbxProjectSection()[this.getFirstProject()['uuid']]['knownRegions'] = [];
++    }
++    if (!this.hasKnownRegion(name)) {
++        this.pbxProjectSection()[this.getFirstProject()['uuid']]['knownRegions'].push(name);
++    }
+ }
+ 
+-pbxProject.prototype.removeKnownRegion = function (name) {
+-  var regions = this.pbxProjectSection()[this.getFirstProject()['uuid']]['knownRegions'];
+-  if (regions) {
+-    for (var i = 0; i < regions.length; i++) {
+-      if (regions[i] === name) {
+-        regions.splice(i, 1);
+-        break;
+-      }
++pbxProject.prototype.removeKnownRegion = function(name) {
++    var regions = this.pbxProjectSection()[this.getFirstProject()['uuid']]['knownRegions'];
++    if (regions) {
++        for (var i = 0; i < regions.length; i++) {
++            if (regions[i] === name) {
++                regions.splice(i, 1);
++                break;
++            }
++        }
++        this.pbxProjectSection()[this.getFirstProject()['uuid']]['knownRegions'] = regions;
+     }
+-    this.pbxProjectSection()[this.getFirstProject()['uuid']]['knownRegions'] = regions;
+-  }
+ }
+ 
+-pbxProject.prototype.hasKnownRegion = function (name) {
+-  var regions = this.pbxProjectSection()[this.getFirstProject()['uuid']]['knownRegions'];
+-  if (regions) {
+-    for (var i in regions) {
+-      if (regions[i] === name) {
+-        return true;
+-      }
++pbxProject.prototype.hasKnownRegion = function(name) {
++    var regions = this.pbxProjectSection()[this.getFirstProject()['uuid']]['knownRegions'];
++    if (regions) {
++        for (var i in regions) {
++            if (regions[i] === name) {
++                return true;
++            }
++        }
+     }
+-  }
+-  return false;
++    return false;
+ }
+ 
+ pbxProject.prototype.getPBXObject = function(name) {
+@@ -2031,7 +2034,7 @@ pbxProject.prototype.getPBXObject = function(name) {
+ 
+ 
+ 
+-pbxProject.prototype.addFile = function (path, group, opt) {
++pbxProject.prototype.addFile = function(path, group, opt) {
+     var file = new pbxFile(path, opt);
+ 
+     // null is better for early errors
+@@ -2051,7 +2054,7 @@ pbxProject.prototype.addFile = function (path, group, opt) {
+     return file;
+ }
+ 
+-pbxProject.prototype.removeFile = function (path, group, opt) {
++pbxProject.prototype.removeFile = function(path, group, opt) {
+     var file = new pbxFile(path, opt);
+ 
+     this.removeFromPbxFileReferenceSection(file);    // PBXFileReference
+@@ -2097,7 +2100,7 @@ pbxProject.prototype.getBuildProperty = function(prop, build, targetName) {
+         if (!COMMENT_KEY.test(configName)) {
+             if (targetName && !validConfigs.includes(configName)) continue;
+             var config = configs[configName];
+-            if ( (build && config.name === build) || (build === undefined) ) {
++            if ((build && config.name === build) || (build === undefined)) {
+                 if (config.buildSettings[prop] !== undefined) {
+                     target = config.buildSettings[prop];
+                 }
+@@ -2113,7 +2116,7 @@ pbxProject.prototype.getBuildConfigByName = function(name) {
+     for (var configName in configs) {
+         if (!COMMENT_KEY.test(configName)) {
+             var config = configs[configName];
+-            if (config.name === name)  {
++            if (config.name === name) {
+                 target[configName] = config;
+             }
+         }
+@@ -2184,7 +2187,7 @@ pbxProject.prototype.addTargetAttribute = function(prop, value, target) {
+     }
+     target = target || this.getFirstTarget();
+     if (attributes['TargetAttributes'][target.uuid] === undefined) {
+-      attributes['TargetAttributes'][target.uuid] = {};
++        attributes['TargetAttributes'][target.uuid] = {};
+     }
+     attributes['TargetAttributes'][target.uuid][prop] = value;
+ }

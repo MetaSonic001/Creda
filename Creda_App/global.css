@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Default Light Theme */
+  :root {
+    --background: 0 0% 100%; /* White */
+    --foreground: 0 0% 4%; /* Near-black text */
+    --card: 0 0% 100%; 
+    --card-foreground: 0 0% 4%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 0 0% 4%;
+    --primary: 165 100% 35%; /* Teal */
+    --primary-foreground: 0 0% 100%; /* White */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 4%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%; /* Gray text */
+    --accent: 264 84% 58%; /* Purple */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%; /* Red */
+    --destructive-foreground: 0 0% 100%;
+    --success: 160 84% 40%; /* Green */
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%; /* Amber */
+    --warning-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 165 100% 35%;
+    --radius: 0.5rem;
+  }
+
+  /* Dark Theme from Dashboard UI */
+  .dark:root {
+    --background: 200 20% 2.94%; /* #0a0a0a */
+    --foreground: 0 0% 98%; /* Off-white text */
+    --card: 195 8.7% 9.02%; 
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 165 100% 35%; /* #00b386 - Teal */
+    --primary-foreground: 0 0% 100%; /* White text */
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 60%; /* #999 */
+    --accent: 264 84% 58%; /* #7c3aed - Purple */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%; /* #ef4444 - Red */
+    --destructive-foreground: 0 0% 100%;
+    --success: 160 84% 40%; /* #10b981 - Green */
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%; /* #f59e0b - Amber */
+    --warning-foreground: 0 0% 100%;
+    --border: 197.14 8.24% 16.67%; 
+    --input: 0 0% 20%;
+    --ring: 165 100% 35%;
+  }
+}
