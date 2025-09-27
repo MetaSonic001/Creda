@@ -76,39 +76,38 @@ export class VoiceUtils {
       .replace(/\s+/g, ' '); // Normalize whitespace
   }
 
-  // Detect wake words with fuzzy matching
+  // Detect wake words with optimized matching
   static detectWakeWord(transcript: string, wakeWords: string[]): boolean {
-    const cleanText = this.cleanTranscript(transcript);
+    const cleanText = this.cleanTranscript(transcript).toLowerCase();
 
-    // Tokenize the transcript so we can do token-level fuzzy matching. This helps
-    // detect short wake-words insidee longer transcripts and improves reliability
-    // across languages and recognition inconsistencies.
+    // Fast exact match first (most common case)
+    for (const word of wakeWords) {
+      if (cleanText.includes(word.toLowerCase())) {
+        return true;
+      }
+    }
+
+    // Token-based matching for partial matches
     const tokens = cleanText.split(/\s+/).filter(Boolean);
 
-    return wakeWords.some(word => {
-      const cleanWord = this.cleanTranscript(word);
-      if (!cleanWord) return false;
-
-      // Exact substring match is the cheapest and most reliable.
-      if (cleanText.includes(cleanWord)) return true;
-
-      // If the wake word is multiple tokens, attempt to match contiguous windows
-      // of tokens from the transcript using fuzzy matching.
+    for (const word of wakeWords) {
+      const cleanWord = this.cleanTranscript(word).toLowerCase();
       const wordTokens = cleanWord.split(/\s+/).filter(Boolean);
-      const maxWindow = Math.max(1, wordTokens.length);
 
-      for (let size = 1; size <= maxWindow; size++) {
-        for (let i = 0; i + size <= tokens.length; i++) {
-          const window = tokens.slice(i, i + size).join(' ');
-          if (this.fuzzyMatch(window, cleanWord, 0.72)) {
-            return true;
+      // Check if wake word tokens appear in sequence
+      for (let i = 0; i <= tokens.length - wordTokens.length; i++) {
+        let match = true;
+        for (let j = 0; j < wordTokens.length; j++) {
+          if (!this.fuzzyMatch(tokens[i + j], wordTokens[j], 0.8)) {
+            match = false;
+            break;
           }
         }
+        if (match) return true;
       }
+    }
 
-      // Fallback: try fuzzy match against the whole transcript (lower precedence)
-      return this.fuzzyMatch(cleanText, cleanWord, 0.70);
-    });
+    return false;
   }
 
   // Create audio response using Web Speech API
@@ -164,14 +163,35 @@ export class VoiceUtils {
     return defaultVoice || voices[0] || null;
   }
 
-  // Request microphone permission with user-friendly error handling
+  // Request microphone permission with better error handling
   static async requestMicrophonePermission(): Promise<boolean> {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Check if we already have permission
+      if (navigator.permissions) {
+        const permission = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+        if (permission.state === 'granted') {
+          return true;
+        }
+        if (permission.state === 'denied') {
+          return false;
+        }
+      }
+
+      // Request permission by creating a temporary audio context
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        }
+      });
+
+      // Immediately stop the stream to release the microphone
       stream.getTracks().forEach(track => track.stop());
+
       return true;
     } catch (error) {
-      console.warn('Microphone permission denied:', error);
+      console.warn('Microphone permission denied or failed:', error);
       return false;
     }
   }

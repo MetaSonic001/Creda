@@ -41,10 +41,10 @@ const ReliableVoiceAssistant: React.FC<ReliableVoiceAssistantProps> = ({
 
   const getStatusText = () => {
     if (permissionGranted === false) return 'Microphone access required';
-    if (isProcessing) return 'Processing command...';
-    if (isActive) return 'Command activated! Speak now...';
-    if (isListening) return 'Listening for "Hey Creda"...';
-    return 'Voice assistant offline';
+    if (isProcessing) return 'Processing your command...';
+    if (isActive) return '🎤 Listening for command...';
+    if (isListening) return '👂 Listening for "Hey Creda"...';
+    return 'Voice assistant ready';
   };
 
   const getIcon = () => {
@@ -185,15 +185,18 @@ const ReliableVoiceAssistant: React.FC<ReliableVoiceAssistantProps> = ({
       </div>
 
       <div className="text-center space-y-2 text-sm text-muted-foreground max-w-md">
-        <p>Say "Hey Creda" followed by:</p>
-        <div className="grid grid-cols-2 gap-2">
-          <div>"Dashboard"</div>
-          <div>"Portfolio"</div>
-          <div>"Budget"</div>
-          <div>"Voice"</div>
-          <div>"Settings"</div>
-          <div>"Help"</div>
+        <p><strong>Try saying:</strong></p>
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <div>"Hey Creda, dashboard"</div>
+          <div>"Hey Creda, portfolio"</div>
+          <div>"Hey Creda, budget"</div>
+          <div>"Hey Creda, settings"</div>
+          <div>"Hey Creda, goals"</div>
+          <div>"Hey Creda, expenses"</div>
+          <div>"Hey Creda, help"</div>
+          <div>"Hey Creda, health"</div>
         </div>
+        <p className="text-xs mt-2">💡 Say "Hey Creda" to activate, then give your command</p>
       </div>
     </div>
   );

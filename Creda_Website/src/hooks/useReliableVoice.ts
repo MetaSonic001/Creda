@@ -26,26 +26,34 @@ export const useReliableVoice = (options: VoiceOptions = {}) => {
   const restartTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const processingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Wake words for activation
+  // Wake words for activation - expanded for better detection
   const wakeWords = [
     'hey creda', 'creda', 'ok creda', 'hello creda',
-    'हे क्रेडा', 'क्रेडा', 'हैलो क्रेडा', 'ओके क्रेडा'
+    'hey creda', 'creda', 'ok creda', 'hello creda',
+    'हे क्रेडा', 'क्रेडा', 'हैलो क्रेडा', 'ओके क्रेडा',
+    'wake up creda', 'activate creda', 'start creda',
+    'listen creda', 'attention creda', 'creda listen'
   ];
 
   // Initialize speech recognition
   useEffect(() => {
-    if (VoiceUtils.isSpeechRecognitionSupported()) {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = VoiceUtils.getSpeechRecognition();
       if (SpeechRecognition) {
         recognitionRef.current = new SpeechRecognition();
         recognitionRef.current.continuous = true;
         recognitionRef.current.interimResults = true;
         recognitionRef.current.lang = 'en-US';
+        recognitionRef.current.maxAlternatives = 1;
+        // Optimize for faster response
+        if ('grammars' in recognitionRef.current) {
+          recognitionRef.current.grammars = new webkitSpeechGrammarList();
+        }
       }
     }
 
     checkMicrophonePermission();
-    
+
     return () => {
       cleanup();
     };
@@ -71,7 +79,20 @@ export const useReliableVoice = (options: VoiceOptions = {}) => {
     }
   };
 
-  const detectWakeWord = useCallback((text: string): boolean => {
+  const detectWakeWord = useCallback((text: string, confidence: number = 0): boolean => {
+    // Only process if confidence is reasonable (Web Speech API confidence is often low)
+    if (confidence > 0 && confidence < 0.3) return false;
+
+    const cleanText = VoiceUtils.cleanTranscript(text).toLowerCase();
+
+    // Check for exact wake word matches first (fastest)
+    for (const word of wakeWords) {
+      if (cleanText.includes(word.toLowerCase())) {
+        return true;
+      }
+    }
+
+    // Fuzzy matching for partial matches
     return VoiceUtils.detectWakeWord(text, wakeWords);
   }, []);
 
@@ -90,11 +111,15 @@ export const useReliableVoice = (options: VoiceOptions = {}) => {
     recognition.onresult = (event) => {
       let finalTranscript = '';
       let interimTranscript = '';
-      
+      let maxConfidence = 0;
+
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
+        const confidence = event.results[i][0].confidence || 0;
+
         if (event.results[i].isFinal) {
           finalTranscript += transcript;
+          maxConfidence = Math.max(maxConfidence, confidence);
         } else {
           interimTranscript += transcript;
         }
@@ -103,34 +128,36 @@ export const useReliableVoice = (options: VoiceOptions = {}) => {
       // Update current transcript for display
       setCurrentTranscript(interimTranscript || finalTranscript);
 
-      // Check for wake word in final transcript
-      if (finalTranscript && detectWakeWord(finalTranscript)) {
+      // Check for wake word in final transcript with confidence check
+      if (finalTranscript && detectWakeWord(finalTranscript, maxConfidence)) {
         handleWakeWordDetected(finalTranscript);
       }
     };
 
     recognition.onerror = (event) => {
       console.warn('Recognition error:', event.error);
-      
+
       if (event.error === 'not-allowed') {
         setPermissionGranted(false);
         return;
       }
-      
-      // Auto-restart on other errors
+
+      // More aggressive restart on errors
       if (!isProcessing) {
+        setIsListening(false);
         restartTimeoutRef.current = setTimeout(() => {
           restartListening();
-        }, 1000);
+        }, 300); // Faster restart
       }
     };
 
     recognition.onend = () => {
       setIsListening(false);
       if (!isProcessing && permissionGranted) {
+        // Immediate restart for continuous listening
         restartTimeoutRef.current = setTimeout(() => {
           restartListening();
-        }, 500);
+        }, 100); // Much faster restart
       }
     };
 
@@ -199,16 +226,21 @@ export const useReliableVoice = (options: VoiceOptions = {}) => {
 
     const recognition = recognitionRef.current;
     recognition.continuous = false; // Single command mode
-    recognition.lang = 'en-US'; // Can be made dynamic later
+    recognition.lang = 'en-US';
+    recognition.maxAlternatives = 1;
 
     recognition.onresult = (event) => {
       let finalTranscript = '';
       let interimTranscript = '';
-      
+      let maxConfidence = 0;
+
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
+        const confidence = event.results[i][0].confidence || 0;
+
         if (event.results[i].isFinal) {
           finalTranscript += transcript;
+          maxConfidence = Math.max(maxConfidence, confidence);
         } else {
           interimTranscript += transcript;
         }
@@ -216,7 +248,8 @@ export const useReliableVoice = (options: VoiceOptions = {}) => {
 
       setCurrentTranscript(interimTranscript || finalTranscript);
 
-      if (finalTranscript.trim()) {
+      // Only process if we have a final transcript with reasonable confidence
+      if (finalTranscript.trim() && maxConfidence >= 0.1) {
         processVoiceCommand(finalTranscript.trim());
       }
     };
@@ -258,29 +291,53 @@ export const useReliableVoice = (options: VoiceOptions = {}) => {
     }
 
     try {
-      // Try Groq NLP first
-      const groqResult = await processCommand(command);
-      const responseText = LocalVoiceService.generateResponse({
-        action: groqResult.action,
-        intent: groqResult.intent,
-        parameters: groqResult.parameters,
-        confidence: groqResult.confidence
-      });
-      
-      await executeCommand(groqResult.action, command, responseText);
-      options.onCommandProcessed?.(command, responseText);
-    } catch (error) {
-      console.warn('Groq processing failed, using local fallback:', error);
-      
-      // Fallback to local processing
+      // Try local processing first for speed
       const localResult = LocalVoiceService.processCommand(command);
-      const responseText = LocalVoiceService.generateResponse(localResult);
-      
-      await executeCommand(localResult.action, command, responseText);
+
+      // If local processing gives a good result, use it immediately
+      if (localResult.confidence > 0.5) {
+        const responseText = LocalVoiceService.generateResponse(localResult);
+        await executeCommand(localResult.action, command, responseText);
+        options.onCommandProcessed?.(command, responseText);
+        finishProcessing();
+        return;
+      }
+
+      // Fallback to Groq NLP for complex commands
+      try {
+        const groqResult = await processCommand(command);
+        if (groqResult.confidence > localResult.confidence) {
+          const responseText = LocalVoiceService.generateResponse({
+            action: groqResult.action,
+            intent: groqResult.intent,
+            parameters: groqResult.parameters,
+            confidence: groqResult.confidence
+          });
+          await executeCommand(groqResult.action, command, responseText);
+          options.onCommandProcessed?.(command, responseText);
+        } else {
+          // Use local result if better
+          const responseText = LocalVoiceService.generateResponse(localResult);
+          await executeCommand(localResult.action, command, responseText);
+          options.onCommandProcessed?.(command, responseText);
+        }
+      } catch (groqError) {
+        console.warn('Groq processing failed, using local fallback:', groqError);
+        // Use local result
+        const responseText = LocalVoiceService.generateResponse(localResult);
+        await executeCommand(localResult.action, command, responseText);
+        options.onCommandProcessed?.(command, responseText);
+      }
+
+      finishProcessing();
+    } catch (error) {
+      console.error('Voice command processing error:', error);
+      const fallbackResult = LocalVoiceService.processCommand(command);
+      const responseText = LocalVoiceService.generateResponse(fallbackResult);
+      await executeCommand(fallbackResult.action, command, responseText);
       options.onCommandProcessed?.(command, responseText);
+      finishProcessing();
     }
-    
-    finishProcessing();
   }, [options, processCommand]);
 
   const parseSimpleCommand = useCallback((command: string): string => {
@@ -297,7 +354,7 @@ export const useReliableVoice = (options: VoiceOptions = {}) => {
   }, []);
 
   const executeCommand = useCallback(async (action: string, command: string, responseText?: string): Promise<void> => {
-    // Navigate based on action
+    // Navigate based on action first (immediate feedback)
     switch (action) {
       case 'dashboard':
         navigate('/dashboard');
@@ -330,28 +387,31 @@ export const useReliableVoice = (options: VoiceOptions = {}) => {
         // These don't require navigation
         break;
     }
-    
+
     // Use provided response text or generate a default
     const finalResponseText = responseText || `Executed command: ${action}`;
 
-    // Speak response using Web Speech API
-    if (options.enableAudioResponse && VoiceUtils.isSpeechSynthesisSupported()) {
-      try {
-        await VoiceUtils.speakText(finalResponseText, {
-          rate: 0.9,
-          pitch: 1,
-          volume: 0.8,
-          lang: 'en-US'
-        });
-      } catch (error) {
-        console.warn('Speech synthesis failed:', error);
-      }
-    }
-
+    // Show toast immediately for visual feedback
     toast({
       title: "Command Executed ✅",
       description: finalResponseText,
     });
+
+    // Delay speech synthesis to avoid interference with recognition
+    if (options.enableAudioResponse && VoiceUtils.isSpeechSynthesisSupported()) {
+      setTimeout(async () => {
+        try {
+          await VoiceUtils.speakText(finalResponseText, {
+            rate: 1.0, // Slightly faster
+            pitch: 1,
+            volume: 0.7, // Slightly quieter to avoid feedback
+            lang: 'en-US'
+          });
+        } catch (error) {
+          console.warn('Speech synthesis failed:', error);
+        }
+      }, 500); // Delay speech by 500ms
+    }
   }, [navigate, options.enableAudioResponse, toast]);
 
   const finishProcessing = useCallback(() => {

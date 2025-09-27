@@ -9,38 +9,85 @@ export interface LocalCommandResult {
 }
 
 export class LocalVoiceService {
-  // Simple pattern-based command processing
+  // Simple pattern-based command processing - optimized for speed
   static processCommand(text: string): LocalCommandResult {
     const cleanText = VoiceUtils.cleanTranscript(text);
-    
-    // Navigation commands
-    if (this.matchesPattern(cleanText, ['dashboard', 'home', 'main'])) {
+    const lowerText = cleanText.toLowerCase();
+
+    // Fast exact matches first (most common)
+    if (lowerText.includes('dashboard') || lowerText.includes('home') || lowerText.includes('main')) {
       return {
         action: 'dashboard',
         intent: 'navigation',
         parameters: { page: 'dashboard' },
-        confidence: 0.9
+        confidence: 0.95
       };
     }
-    
-    if (this.matchesPattern(cleanText, ['portfolio', 'investments', 'stocks'])) {
+
+    if (lowerText.includes('portfolio') || lowerText.includes('invest') || lowerText.includes('stocks')) {
       return {
         action: 'portfolio',
         intent: 'navigation',
         parameters: { page: 'portfolio' },
-        confidence: 0.9
+        confidence: 0.95
       };
     }
-    
-    if (this.matchesPattern(cleanText, ['budget', 'budgets', 'budgeting'])) {
+
+    if (lowerText.includes('budget') || lowerText.includes('spend') || lowerText.includes('money')) {
       return {
         action: 'budget',
         intent: 'navigation',
         parameters: { page: 'budget' },
+        confidence: 0.95
+      };
+    }
+
+    if (lowerText.includes('setting') || lowerText.includes('config') || lowerText.includes('preference')) {
+      return {
+        action: 'settings',
+        intent: 'navigation',
+        parameters: { page: 'settings' },
+        confidence: 0.95
+      };
+    }
+
+    if (lowerText.includes('goal') || lowerText.includes('target') || lowerText.includes('saving')) {
+      return {
+        action: 'goals',
+        intent: 'navigation',
+        parameters: { page: 'goals' },
         confidence: 0.9
       };
     }
-    
+
+    if (lowerText.includes('expense') || lowerText.includes('analytic') || lowerText.includes('report')) {
+      return {
+        action: 'expense_analysis',
+        intent: 'navigation',
+        parameters: { page: 'expense-analytics' },
+        confidence: 0.9
+      };
+    }
+
+    if (lowerText.includes('health') || lowerText.includes('score') || lowerText.includes('financial health')) {
+      return {
+        action: 'health',
+        intent: 'navigation',
+        parameters: { page: 'health' },
+        confidence: 0.9
+      };
+    }
+
+    if (lowerText.includes('help') || lowerText.includes('assist') || lowerText.includes('what can you do')) {
+      return {
+        action: 'help',
+        intent: 'information',
+        parameters: {},
+        confidence: 0.9
+      };
+    }
+
+    // Fallback to pattern matching for less common commands
     if (this.matchesPattern(cleanText, ['voice', 'voice assistant', 'voice commands'])) {
       return {
         action: 'voice',
@@ -49,25 +96,7 @@ export class LocalVoiceService {
         confidence: 0.9
       };
     }
-    
-    if (this.matchesPattern(cleanText, ['settings', 'preferences', 'config'])) {
-      return {
-        action: 'settings',
-        intent: 'navigation',
-        parameters: { page: 'settings' },
-        confidence: 0.9
-      };
-    }
-    
-    if (this.matchesPattern(cleanText, ['help', 'assistance', 'support'])) {
-      return {
-        action: 'help',
-        intent: 'information',
-        parameters: {},
-        confidence: 0.8
-      };
-    }
-    
+
     // Financial queries
     if (this.matchesPattern(cleanText, ['balance', 'money', 'account', 'total'])) {
       return {
@@ -77,7 +106,7 @@ export class LocalVoiceService {
         confidence: 0.7
       };
     }
-    
+
     if (this.matchesPattern(cleanText, ['advice', 'recommend', 'suggest', 'should i'])) {
       return {
         action: 'get_advice',
@@ -86,37 +115,7 @@ export class LocalVoiceService {
         confidence: 0.7
       };
     }
-    
-    // Goals and planning
-    if (this.matchesPattern(cleanText, ['goal', 'goals', 'target', 'plan'])) {
-      return {
-        action: 'goals',
-        intent: 'navigation',
-        parameters: { page: 'goals' },
-        confidence: 0.8
-      };
-    }
-    
-    // Analytics and reports
-    if (this.matchesPattern(cleanText, ['analytics', 'analysis', 'report', 'spending'])) {
-      return {
-        action: 'expense_analysis',
-        intent: 'navigation',
-        parameters: { page: 'expense-analytics' },
-        confidence: 0.8
-      };
-    }
-    
-    // Health check
-    if (this.matchesPattern(cleanText, ['health', 'financial health', 'score'])) {
-      return {
-        action: 'health',
-        intent: 'navigation',
-        parameters: { page: 'health' },
-        confidence: 0.8
-      };
-    }
-    
+
     // Default fallback
     return {
       action: 'unknown',
