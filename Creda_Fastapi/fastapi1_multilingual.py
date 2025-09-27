@@ -1009,14 +1009,15 @@ async def transcribe_audio(audio: UploadFile = File(...)):
     """
     try:
         result = await speech_to_text(audio)
+        # Return keys in a sorted, logical order
         return {
             "transcription": result["transcription"],
             "detected_language": result["detected_language"],
+            "language_confidence": result["language_confidence"],
             "confidence": result["confidence"],
             "model_used": result["model_used"],
-            "processing_time": result["processing_time"],
             "audio_quality": result["audio_quality"],
-            "language_confidence": result["language_confidence"]
+            "processing_time": result["processing_time"]
         }
     except HTTPException as e:
         raise e

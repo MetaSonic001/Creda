@@ -161,8 +161,36 @@ def determine_service_route(endpoint: str, request_data: Any = None) -> tuple:
     # Voice and language processing routes -> FastAPI 1
     voice_routes = [
         "/process_voice", "/get_audio_response", "/translate", 
-        "/understand_intent", "/process_multilingual_query", "/test_asr"
+        "/understand_intent", "/process_multilingual_query", "/test_asr", "/transcribe_audio"
     ]
+# --- Fast audio transcription proxy route ---
+from fastapi import UploadFile, File
+
+@app.post("/transcribe_audio")
+async def transcribe_audio_gateway(audio: UploadFile = File(...)):
+    """
+    Proxy for fast audio transcription. Forwards audio to multilingual service /transcribe_audio.
+    """
+    start_time = time.time()
+    try:
+        content = await audio.read()
+        files = {
+            "audio": (audio.filename or "audio", content, audio.content_type or "application/octet-stream")
+        }
+        # Proxy the request to FastAPI1 (multilingual service)
+        result = await route_request(FASTAPI1_URL, "/transcribe_audio", "POST", files=files, timeout_seconds=60.0)
+        return {
+            "success": True,
+            "data": result,
+            "service": "multilingual",
+            "timestamp": datetime.now().isoformat(),
+            "processing_time": time.time() - start_time
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in /transcribe_audio proxy: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
     
     # Finance and portfolio routes -> FastAPI 2
     finance_routes = [
