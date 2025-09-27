@@ -55,7 +55,28 @@ service_health = {
     "multilingual": {"status": "unknown", "last_check": None},
     "finance": {"status": "unknown", "last_check": None}
 }
+# Conversation state management for Indian financial context
+conversation_states = {}
 
+class IndianFinancialContext:
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+        self.region = "north"  # default
+        self.language_preference = "hindi"
+        self.financial_profile = {}
+        self.recent_queries = []
+        self.scheme_interests = []
+        
+    def update_context(self, query: str, response: dict):
+        self.recent_queries.append({
+            "query": query,
+            "timestamp": datetime.now().isoformat(),
+            "intent": response.get("intent", "unknown")
+        })
+        
+        # Keep only last 5 queries
+        if len(self.recent_queries) > 5:
+            self.recent_queries.pop(0)
 # Request models
 class QueryRequest(BaseModel):
     query: str
@@ -112,11 +133,10 @@ async def check_service_health(service_url: str, service_name: str) -> bool:
         return False
 
 async def route_request(service_url: str, endpoint: str, method: str = "POST", 
-                       data: Any = None, files: Dict = None, params: Dict = None,
-                       timeout_seconds: float = 30.0) -> Dict:
+                       data: Any = None, files: Dict = None, params: Dict = None) -> Dict:
     """Route request to appropriate service"""
     try:
-        async with httpx.AsyncClient(timeout=timeout_seconds) as client:
+        async with httpx.AsyncClient(timeout=30.0) as client:
             url = f"{service_url}{endpoint}"
             
             # Debug logging
@@ -143,6 +163,10 @@ async def route_request(service_url: str, endpoint: str, method: str = "POST",
             
             if response.status_code == 200:
                 return response.json()
+            elif response.status_code == 422:
+                error_detail = response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
+                logger.error(f"Validation error for {endpoint}: {error_detail}")
+                raise HTTPException(status_code=422, detail=f"Validation error: {error_detail}")
             else:
                 logger.error(f"Service error for {endpoint}: {response.status_code} - {response.text}")
                 raise HTTPException(status_code=response.status_code, detail=response.text)
@@ -161,36 +185,8 @@ def determine_service_route(endpoint: str, request_data: Any = None) -> tuple:
     # Voice and language processing routes -> FastAPI 1
     voice_routes = [
         "/process_voice", "/get_audio_response", "/translate", 
-        "/understand_intent", "/process_multilingual_query", "/test_asr", "/transcribe_audio"
+        "/understand_intent", "/process_multilingual_query", "/test_asr"
     ]
-# --- Fast audio transcription proxy route ---
-from fastapi import UploadFile, File
-
-@app.post("/transcribe_audio")
-async def transcribe_audio_gateway(audio: UploadFile = File(...)):
-    """
-    Proxy for fast audio transcription. Forwards audio to multilingual service /transcribe_audio.
-    """
-    start_time = time.time()
-    try:
-        content = await audio.read()
-        files = {
-            "audio": (audio.filename or "audio", content, audio.content_type or "application/octet-stream")
-        }
-        # Proxy the request to FastAPI1 (multilingual service)
-        result = await route_request(FASTAPI1_URL, "/transcribe_audio", "POST", files=files, timeout_seconds=60.0)
-        return {
-            "success": True,
-            "data": result,
-            "service": "multilingual",
-            "timestamp": datetime.now().isoformat(),
-            "processing_time": time.time() - start_time
-        }
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error in /transcribe_audio proxy: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
     
     # Finance and portfolio routes -> FastAPI 2
     finance_routes = [
@@ -290,8 +286,7 @@ async def process_voice_request(audio: UploadFile = File(...), language: str = "
         data = {"language": language}
 
         # Proxy the request to FastAPI1 (multilingual service)
-        # Voice processing can take longer (ASR + translation + TTS). Increase timeout.
-        result = await route_request(FASTAPI1_URL, "/process_voice", "POST", data=data, files=files, timeout_seconds=120.0)
+        result = await route_request(FASTAPI1_URL, "/process_voice", "POST", data=data, files=files)
 
         return GatewayResponse(
             success=True,
@@ -327,14 +322,14 @@ async def translate(request: TranslationRequest):
     """Route translation to multilingual service"""
     start_time = time.time()
     
-    # Convert to query parameters for FastAPI1 compatibility
-    params = {
+    # Use POST with JSON body instead of query parameters
+    data = {
         "text": request.text,
         "source_language": request.source_language,
         "target_language": request.target_language
     }
     
-    result = await route_request(FASTAPI1_URL, "/translate", "POST", params=params)
+    result = await route_request(FASTAPI1_URL, "/translate", "POST", data=data)
     
     return GatewayResponse(
         success=True,
@@ -364,7 +359,13 @@ async def process_multilingual_query(request: QueryRequest):
     """Route multilingual query processing"""
     start_time = time.time()
     
-    result = await route_request(FASTAPI1_URL, "/process_multilingual_query", "POST", data=request.dict())
+    multilingual_data = {
+        "text": request.query,
+        "language": request.language,
+        "user_id": request.user_id,
+        "auto_detect": True
+    }
+    result = await route_request(FASTAPI1_URL, "/process_multilingual_query", "POST", data=multilingual_data)
     
     return GatewayResponse(
         success=True,
@@ -378,22 +379,50 @@ async def process_multilingual_query(request: QueryRequest):
 
 @app.post("/process_request")
 async def process_finance_request(request: QueryRequest):
-    """Route finance requests with intelligent fallback"""
+    """Enhanced finance request processing with Indian context"""
     start_time = time.time()
     
     try:
-        # Try finance service first
-        result = await route_request(FASTAPI2_URL, "/process_request", "POST", data=request.dict())
-        service_used = "finance"
+        # Get or create user context
+        user_context = conversation_states.get(request.user_id, IndianFinancialContext(request.user_id))
+        conversation_states[request.user_id] = user_context
+        
+        # Enhanced finance data with Indian context
+        finance_data = {
+            "text": request.query,  # Change from "query" to "text"
+            "intent": "general_query",
+            "entities": {},
+            "user_language": request.language or "hindi",
+            "user_id": request.user_id,
+            "indian_context": {
+                "region": user_context.region,
+                "recent_queries": user_context.recent_queries,
+                "scheme_interests": user_context.scheme_interests
+            }
+        }
+        
+        # Try finance service with enhanced context
+        result = await route_request(FASTAPI2_URL, "/process_request", "POST", data=finance_data)
+        
+        # Update user context
+        user_context.update_context(request.query, result)
+        
+        service_used = "finance-enhanced"
+        
     except HTTPException as e:
-        logger.warning(f"Finance service failed, trying multilingual: {e}")
-        # Fallback to multilingual service
+        logger.warning(f"Enhanced finance service failed: {e}")
+        # Fallback to basic processing
         try:
-            result = await route_request(FASTAPI1_URL, "/process_multilingual_query", "POST", data=request.dict())
+            basic_data = {
+                "text": request.query,
+                "auto_detect": True,
+                "language": request.language
+            }
+            result = await route_request(FASTAPI1_URL, "/process_multilingual_query", "POST", data=basic_data)
             service_used = "multilingual (fallback)"
         except HTTPException as fallback_error:
             logger.error(f"Both services failed: {fallback_error}")
-            raise e  # Raise original error
+            raise e
     
     return GatewayResponse(
         success=True,
@@ -402,7 +431,7 @@ async def process_finance_request(request: QueryRequest):
         timestamp=datetime.now().isoformat(),
         processing_time=time.time() - start_time
     )
-
+    
 @app.post("/portfolio_optimization")
 async def portfolio_optimization(request: PortfolioRequest):
     """Route portfolio optimization to finance service"""
@@ -502,7 +531,6 @@ async def knowledge_base_stats():
     )
 
 # Intelligent Universal Endpoint
-
 @app.post("/query")
 async def universal_query(request: QueryRequest):
     """Universal query endpoint with intelligent routing"""
@@ -510,14 +538,24 @@ async def universal_query(request: QueryRequest):
     
     service_url, service_name = determine_service_route("/query", request.dict())
     
-    # Route to appropriate service based on content analysis
-    if service_name == "finance":
-        endpoint = "/process_request"
-    else:
-        endpoint = "/process_multilingual_query"
-    
     try:
-        result = await route_request(service_url, endpoint, "POST", data=request.dict())
+        if service_name == "finance":
+            # Format for finance service
+            finance_data = {
+                "text": request.query,  # Use "text" not "query"
+                "intent": "general_query",
+                "entities": {},
+                "user_language": request.language or "english"
+            }
+            result = await route_request(service_url, "/process_request", "POST", data=finance_data)
+        else:
+            # Format for multilingual service
+            multilingual_data = {
+                "text": request.query,
+                "auto_detect": True,
+                "language": request.language
+            }
+            result = await route_request(service_url, "/process_multilingual_query", "POST", data=multilingual_data)
         
         return GatewayResponse(
             success=True,
@@ -631,9 +669,9 @@ async def dynamic_route(endpoint: str, request: Request):
             processing_time=time.time() - start_time
         )
     except HTTPException as e:
+        # Don't re-raise as 500, preserve original error
         logger.error(f"Dynamic routing failed for /{endpoint}: {e}")
-        raise e
-
+        raise e  # This maintains the original status code
 # Startup and shutdown events
 
 @app.on_event("startup")

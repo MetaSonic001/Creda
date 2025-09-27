@@ -25,6 +25,7 @@ import Auth from "./pages/Auth";
 import Voice from "./pages/Voice";
 import ReliableVoiceAssistant from "./components/ReliableVoiceAssistant";
 import NotFound from "./pages/NotFound";
+import { AlwaysOnVoice } from "./components/AlwaysOnVoice";
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 const queryClient = new QueryClient();
@@ -38,6 +39,8 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+               <AlwaysOnVoice />
+
               <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/auth/sign-in" element={<Auth mode="sign-in" />} />

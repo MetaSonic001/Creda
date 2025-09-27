@@ -61,51 +61,56 @@ class Models:
         self.asr_tokenizer = None
             
         # Load AI4Bharat IndicConformer ASR model
+        # Load AI4Bharat models for Indian languages
         try:
-            print("🔄 Loading AI4Bharat IndicConformer model...")
-            if HF_TOKEN:
-                self.asr_model = AutoModel.from_pretrained(
-                    "ai4bharat/indic-conformer-600m-multilingual", 
-                    token=HF_TOKEN,
-                    trust_remote_code=True
-                )
-            else:
-                self.asr_model = AutoModel.from_pretrained(
-                    "ai4bharat/indic-conformer-600m-multilingual",
-                    trust_remote_code=True
-                )
-            self.asr_processor = None
-            print(f"✅ Loaded AI4Bharat IndicConformer ASR model: {type(self.asr_model).__name__}")
-            print(f"Available methods: {[method for method in dir(self.asr_model) if callable(getattr(self.asr_model, method)) and not method.startswith('_')]}")
+            print("📄 Loading AI4Bharat IndicWav2Vec models...")
+            # Primary Hindi model
+            self.asr_model = pipeline(
+                "automatic-speech-recognition",
+                model="ai4bharat/indicwav2vec-hindi",  # Correct name
+                tokenizer="ai4bharat/indicwav2vec-hindi",  # Correct name  
+                device=0 if self.device == "cuda" else -1,
+                chunk_length_s=10,
+                stride_length_s=2
+            )
+            # Language-specific models for better accuracy
+            self.lang_models = {
+                'hindi': 'ai4bharat/indicwav2vec-hindi',  # Remove the '2' 
+                'bengali': 'ai4bharat/indicwav2vec-bengali',  # Remove the '2'
+                'tamil': 'ai4bharat/indicwav2vec-tamil',  # Remove the '2'
+                'telugu': 'ai4bharat/indicwav2vec-telugu',  # Remove the '2'
+                'english': 'openai/whisper-small'
+            }
+            
+            # Code-mixing detection capability
+            self.code_mix_threshold = 0.3
+            
+            print(f"✅ Loaded AI4Bharat ASR models for Indian languages")
+            
         except Exception as e:
-            print(f"❌ Failed to load AI4Bharat ASR: {e}")
-            # Try alternative model names
-            model_alternatives = [
-                "ai4bharat/indicwav2vec2-hindi",
-                "openai/whisper-small"
-            ]
-            for model_name in model_alternatives:
-                try:
-                    if "whisper" in model_name:
-                        self.asr_model = pipeline("automatic-speech-recognition", 
-                                                model=model_name, 
-                                                device=0 if self.device == "cuda" else -1)
-                        print(f"⚠️ Using Whisper ASR as fallback: {type(self.asr_model).__name__}")
-                        break
-                    else:
-                        self.asr_model = AutoModel.from_pretrained(model_name, trust_remote_code=True)
-                        print(f"✅ Loaded alternative model {model_name}: {type(self.asr_model).__name__}")
-                        break
-                except Exception as alt_e:
-                    print(f"❌ Failed to load {model_name}: {alt_e}")
-                    continue
-            else:
-                print("❌ No ASR model could be loaded")
-                self.asr_model = None
+            print(f"❌ Failed to load AI4Bharat models: {e}")
+            # Fallback to Whisper
+            self.asr_model = pipeline("automatic-speech-recognition", 
+                                    model="openai/whisper-small", 
+                                    device=0 if self.device == "cuda" else -1)
+            self.lang_models = {'english': 'openai/whisper-small'}
+            print("⚠️ Using Whisper as fallback")
             
         # Load AI4Bharat IndicTrans2 Translation model
+        # Load AI4Bharat IndicTrans2 with proper preprocessing
         try:
-            print("🔄 Loading AI4Bharat IndicTrans2 model...")
+            print("📄 Loading AI4Bharat IndicTrans2 model...")
+            
+            # Import IndicNLP for proper preprocessing
+            try:
+                from indicnlp.tokenize import indic_tokenize
+                from indicnlp.normalize.indic_normalize import IndicNormalizerFactory
+                self.normalizer_factory = IndicNormalizerFactory()
+                self.indic_nlp_available = True
+            except ImportError:
+                print("⚠️ IndicNLP not available, using basic preprocessing")
+                self.indic_nlp_available = False
+            
             if HF_TOKEN:
                 self.translator_tokenizer = AutoTokenizer.from_pretrained(
                     "ai4bharat/indictrans2-indic-en-1B",
@@ -129,18 +134,20 @@ class Models:
                     torch_dtype=torch.float16 if self.device == "cuda" else torch.float32
                 )
                 
-            # Move model to device
             self.translator_model = self.translator_model.to(self.device)
-                
-            # Initialize IndicProcessor
-            try:
-                from IndicTransToolkit.processor import IndicProcessor
-                self.indic_processor = IndicProcessor(inference=True)
-                print("✅ Loaded AI4Bharat IndicTrans2 model with processor")
-            except ImportError:
-                print("⚠️ IndicTransToolkit not available, using basic tokenizer")
-                self.indic_processor = None
-                print("✅ Loaded AI4Bharat IndicTrans2 model (basic mode)")
+            
+            # Enhanced language mappings for IndicTrans2
+            self.flores_codes = {
+                "hindi": "hin_Deva", "english": "eng_Latn", 
+                "tamil": "tam_Taml", "telugu": "tel_Telu", 
+                "bengali": "ben_Beng", "marathi": "mar_Deva",
+                "gujarati": "guj_Gujr", "kannada": "kan_Knda", 
+                "malayalam": "mal_Mlym", "punjabi": "pan_Guru", 
+                "urdu": "urd_Arab", "odia": "ory_Orya",
+                "assamese": "asm_Beng"
+            }
+            
+            print("✅ Loaded AI4Bharat IndicTrans2 with enhanced preprocessing")
                     
         except Exception as e:
             print(f"❌ Failed to load AI4Bharat Translation: {e}")
@@ -148,7 +155,7 @@ class Models:
                                         model="facebook/nllb-200-distilled-600M",
                                         device=0 if self.device == "cuda" else -1)
             self.translator_tokenizer = None
-            self.indic_processor = None
+            self.indic_nlp_available = False
             print("⚠️ Using NLLB translation as fallback")
             
         # Language mappings
@@ -161,6 +168,14 @@ class Models:
         
     
 models = Models()
+async def detect_code_mixing(self, audio: np.ndarray) -> bool:
+    """Detect Hindi-English code mixing in speech"""
+    try:
+        # Simple approach: check for English words in transcription
+        # In production, use specialized code-mixing detection model
+        return False  # Placeholder - implement actual detection
+    except Exception:
+        return False
 
 async def detect_language_from_audio(audio_data: np.ndarray) -> str:
     """Detect language from audio using spectral characteristics"""
@@ -351,135 +366,96 @@ async def detect_language_from_audio_advanced(audio: np.ndarray, sr: int = 16000
         print(f"Advanced audio language detection failed: {e}")
         return "hindi", 0.3
 
-async def speech_to_text(audio_file: UploadFile) -> Dict[str, str]:
-    """Convert speech to text using AI4Bharat IndicConformer with fallbacks"""
-    start_time = time.time()
-        
+
+async def preprocess_indic_text(self, text: str, language: str) -> str:
+    """Preprocess text using IndicNLP if available"""
+    if not self.indic_nlp_available:
+        return text
+    
     try:
-        # Validate audio file first
+        if language in ['hindi', 'marathi', 'gujarati']:  # Devanagari scripts
+            normalizer = self.normalizer_factory.get_normalizer("hi")
+            return normalizer.normalize(text)
+        elif language == 'tamil':
+            normalizer = self.normalizer_factory.get_normalizer("ta")
+            return normalizer.normalize(text)
+        elif language == 'bengali':
+            normalizer = self.normalizer_factory.get_normalizer("bn")
+            return normalizer.normalize(text)
+    except Exception as e:
+        print(f"Preprocessing failed: {e}")
+    
+    return text
+
+
+async def speech_to_text(audio_file: UploadFile) -> Dict[str, str]:
+    """Enhanced ASR with Indian language context and code-mixing support"""
+    start_time = time.time()
+            
+    try:
         if not await validate_audio_file(audio_file):
             raise HTTPException(status_code=400, detail="Invalid audio file format or size")
-            
-        # Read audio content
+                
         content = await audio_file.read()
-            
-        # Preprocess audio (convert to 16kHz mono)
         audio, quality_score = await preprocess_audio(content, target_sr=16000)
-            
-        # Advanced language detection
+                
+        # Enhanced language detection
         detected_lang, lang_confidence = await detect_language_from_audio_advanced(audio, sr=16000)
-        lang_code = models.lang_codes.get(detected_lang, "hi")
+            
+        # Check for code-mixing (Hindi-English)
+        code_mix_detected = await models.detect_code_mixing(audio)
             
         transcription = ""
         confidence = 0.0
         model_used = "unknown"
             
-        # Check which model is loaded
-        if hasattr(models.asr_model, 'from_pretrained') and not hasattr(models.asr_model, '__call__'):
-            print(f"Using AI4Bharat IndicConformer model")
-            try:
-                # Prepare audio tensor for AI4Bharat model
-                audio_tensor = torch.tensor(audio, dtype=torch.float32).unsqueeze(0)
-                    
-                # Try different IndicConformer interfaces
-                if hasattr(models.asr_model, 'transcribe'):
-                    print(f"Attempting IndicConformer transcribe method with lang={lang_code}")
-                    result = models.asr_model.transcribe(audio_tensor, language=lang_code)
-                    transcription = result.get('text', '') if isinstance(result, dict) else str(result)
-                    confidence = 0.9
-                    model_used = "AI4Bharat-IndicConformer"
-                        
-                elif hasattr(models.asr_model, 'generate'):
-                    print(f"Attempting IndicConformer generate method")
-                    with torch.no_grad():
-                        generated = models.asr_model.generate(audio_tensor, max_length=512)
-                        # Decode generated tokens (this needs tokenizer)
-                        if hasattr(models, 'asr_tokenizer') and models.asr_tokenizer:
-                            transcription = models.asr_tokenizer.decode(generated[0], skip_special_tokens=True)
-                        else:
-                            transcription = f"Generated tokens: {generated.shape}"
-                    confidence = 0.85
-                    model_used = "AI4Bharat-IndicConformer-Generate"
-                        
-                elif hasattr(models.asr_model, 'forward'):
-                    print(f"Attempting IndicConformer forward method with lang={lang_code}")
-                    with torch.no_grad():
-                        # Add batch dimension if needed
-                        if audio_tensor.dim() == 1:
-                            audio_tensor = audio_tensor.unsqueeze(0)
-                            
-                        # Forward pass with lang parameter
-                        logits = models.asr_model.forward(audio_tensor, lang=lang_code)
-                            
-                        # CTC greedy decoding
-                        if hasattr(logits, 'logits'):
-                            logits = logits.logits
-                            
-                        # Get most likely tokens
-                        predicted_ids = torch.argmax(logits, dim=-1)
-                            
-                        # Simple greedy decoding (remove blanks and repeats)
-                        decoded_tokens = []
-                        prev_token = -1
-                        for token in predicted_ids[0]:
-                            if token != 0 and token != prev_token:  # 0 is blank token
-                                decoded_tokens.append(token.item())
-                            prev_token = token
-                            
-                        # Convert tokens to text (needs proper vocabulary mapping)
-                        transcription = f"CTC decoded tokens: {len(decoded_tokens)} tokens"
-                        confidence = 0.8
-                        model_used = "AI4Bharat-IndicConformer-CTC"
-                    
-                print(f"✅ {model_used} transcription: '{transcription[:50]}...'")
-                    
-            except Exception as e:
-                print(f"❌ AI4Bharat IndicConformer failed: {e}")
-                transcription = ""
-                confidence = 0.0
-            
-        # Fallback to Whisper if IndicConformer fails or produces empty result
-        if not transcription.strip() or confidence < 0.5:
-            print(f"Using Whisper pipeline as fallback with language={lang_code}")
-            try:
-                # Save audio to temporary file for Whisper
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
-                    import soundfile as sf
-                    sf.write(tmp_file.name, audio, 16000)
-                    tmp_file_path = tmp_file.name
-                    
-                # Use Whisper pipeline fallback; pipeline call signature varies by HF version.
-                # Avoid passing unsupported kwargs like 'language' directly to the pipeline function.
-                try:
-                    result = models.asr_model(tmp_file_path, task="transcribe")
-                except TypeError:
-                    # Older/newer pipeline versions may require different call patterns; try calling via __call__
-                    result = models.asr_model(tmp_file_path)
-                    
-                # Normalize result to extract text safely
-                transcription = result.get("text", str(result)) if isinstance(result, dict) else str(result)
+        try:
+            if code_mix_detected:
+                # Use primary model for code-mixed speech
+                result = models.asr_model(audio, sampling_rate=16000)
+                transcription = result["text"] if isinstance(result, dict) else str(result)
+                model_used = "AI4Bharat-CodeMix"
                 confidence = 0.85
+            else:
+                # Use language-specific model if available
+                model_name = models.lang_models.get(detected_lang, "ai4bharat/indicwav2vec2-hindi")
+                    
+                if model_name != models.asr_model.model.name_or_path:
+                    # Load language-specific model
+                    lang_model = pipeline(
+                        "automatic-speech-recognition",
+                        model=model_name,
+                        device=0 if models.device == "cuda" else -1
+                    )
+                    result = lang_model(audio, sampling_rate=16000)
+                else:
+                    result = models.asr_model(audio, sampling_rate=16000)
+                    
+                transcription = result["text"] if isinstance(result, dict) else str(result)
+                model_used = f"AI4Bharat-{detected_lang}"
+                confidence = 0.90
+                    
+            # Post-process with IndicNLP if available
+            transcription = await models.preprocess_indic_text(transcription, detected_lang)
+                    
+        except Exception as e:
+            print(f"❌ AI4Bharat ASR failed: {e}")
+            # Fallback to Whisper
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
+                import soundfile as sf
+                sf.write(tmp_file.name, audio, 16000)
+                    
+                result = models.asr_model(tmp_file.name)
+                transcription = result["text"] if isinstance(result, dict) else str(result)
+                confidence = 0.75
                 model_used = "Whisper-Fallback"
                     
-                # Update language detection from transcription
-                text_detected_lang = await detect_language_from_text(transcription)
-                if text_detected_lang != detected_lang:
-                    detected_lang = text_detected_lang
-                    lang_confidence = 0.8
-                    
-                os.unlink(tmp_file_path)
-                print(f"✅ Whisper fallback transcription: '{transcription[:50]}...'")
-                    
-            except Exception as e:
-                print(f"❌ Whisper fallback also failed: {e}")
-                raise HTTPException(status_code=500, detail=f"All ASR models failed: {str(e)}")
+                os.unlink(tmp_file.name)
             
-        # Calculate final confidence score
+        # Enhanced confidence calculation
         final_confidence = min(confidence * quality_score * lang_confidence, 1.0)
-            
-        # Performance timing
         processing_time = time.time() - start_time
-            
+                
         result = {
             "transcription": transcription.strip(),
             "detected_language": detected_lang,
@@ -487,12 +463,12 @@ async def speech_to_text(audio_file: UploadFile) -> Dict[str, str]:
             "model_used": model_used,
             "processing_time": round(processing_time, 2),
             "audio_quality": round(quality_score, 3),
-            "language_confidence": round(lang_confidence, 3)
+            "language_confidence": round(lang_confidence, 3),
+            "code_mixing_detected": code_mix_detected
         }
-            
-        print(f"🎯 ASR Result: {result}")
+                
         return result
-        
+            
     except Exception as e:
         processing_time = time.time() - start_time
         print(f"❌ ASR Error after {processing_time:.2f}s: {str(e)}")
@@ -532,7 +508,17 @@ async def translate_text(text: str, source_lang: str, target_lang: str = "englis
                 inputs = models.translator_tokenizer(
                     text, return_tensors="pt", padding=True, truncation=True
                 ).to(models.device)
-            
+            # In translate_text function, after creating inputs, add:
+            if inputs is None or not hasattr(inputs, 'input_ids'):
+                print("Invalid inputs created, falling back to basic tokenization")
+                inputs = models.translator_tokenizer(
+                    text, return_tensors="pt", padding=True, truncation=True, max_length=512
+                ).to(models.device)
+
+            # Also add this check before generation:
+            if inputs.input_ids.shape[1] == 0:
+                print("Empty input tokens, returning original text")
+                return text
             # Generate translation
             with torch.no_grad():
                 generated_tokens = models.translator_model.generate(
@@ -614,7 +600,7 @@ async def understand_intent(text: str) -> IntentResponse:
             # Try Groq
             chat_completion = groq_client.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
-                model="mixtral-8x7b-32768",
+                model="llama-3.1-8b-instant",
             )
             result = json.loads(chat_completion.choices[0].message.content)
             return IntentResponse(**result)
@@ -829,18 +815,21 @@ async def get_audio_response(request: SpeechRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/translate")
-async def translate_endpoint(
-    text: str, 
-    source_language: str, 
-    target_language: str = "english"
-):
+async def translate_endpoint(request_data: dict):
     """
     Translate text between languages
     
-    Input: text, source_language, target_language
+    Input: {"text": "...", "source_language": "...", "target_language": "..."}
     Output: {"translated_text": "result"}
     """
     try:
+        text = request_data.get("text", "")
+        source_language = request_data.get("source_language", "english")
+        target_language = request_data.get("target_language", "english")
+        
+        if not text:
+            raise HTTPException(status_code=400, detail="Text field is required")
+        
         result = await translate_text(text, source_language, target_language)
         return {"translated_text": result}
     except Exception as e:
@@ -879,7 +868,7 @@ async def process_multilingual_query(request: dict):
     }
     """
     try:
-        original_text = request.get("text", "")
+        original_text = request.get("text") or request.get("query", "")
         auto_detect = request.get("auto_detect", True)
         
         if not original_text.strip():
@@ -995,34 +984,7 @@ async def test_asr_model():
         return model_info
     
     except Exception as e:
-
         return {"error": str(e), "test_status": "failed"}
-
-
-
-# --- Fast audio transcription endpoint ---
-@app.post("/transcribe_audio")
-async def transcribe_audio(audio: UploadFile = File(...)):
-    """
-    Fast endpoint: Transcribe uploaded audio file to text with minimal latency.
-    Returns transcription and metadata (detected language, confidence, model, etc).
-    """
-    try:
-        result = await speech_to_text(audio)
-        # Return keys in a sorted, logical order
-        return {
-            "transcription": result["transcription"],
-            "detected_language": result["detected_language"],
-            "language_confidence": result["language_confidence"],
-            "confidence": result["confidence"],
-            "model_used": result["model_used"],
-            "audio_quality": result["audio_quality"],
-            "processing_time": result["processing_time"]
-        }
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Transcription failed: {str(e)}")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
