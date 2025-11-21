@@ -1,11 +1,11 @@
-# Combined Financial Voice Assistant
+# CREDA
 
-The **Combined Financial Voice Assistant** is a state-of-the-art, AI-powered financial advisory platform designed for Indian users, delivering personalized financial planning, portfolio management, budget optimization, and expense tracking. It integrates the **CA Voice RAG Agent** (a Flask-based, Twilio-powered voice system) with the **Multilingual Finance Voice Assistant** (a FastAPI-based, multilingual AI system) to provide seamless voice and text interactions in 11+ Indian languages (Hindi, Tamil, Telugu, Bengali, Marathi, Gujarati, Kannada, Malayalam, Punjabi, Urdu, and English). Leveraging Retrieval-Augmented Generation (RAG), advanced AI models (Groq, Gemini, AI4Bharat), and Indian market-specific optimizations, the platform ensures accurate, regulatory-compliant financial advice with high performance and scalability.
+**CREDA** is a state-of-the-art, AI-powered financial advisory platform designed for Indian users, delivering personalized financial planning, portfolio management, budget optimization, and expense tracking. It integrates the **CA Voice RAG Agent** (a Flask-based, Twilio-powered voice system) with the **Multilingual Finance Voice Assistant** (a FastAPI-based, multilingual AI system) to provide seamless voice and text interactions in 11+ Indian languages (Hindi, Tamil, Telugu, Bengali, Marathi, Gujarati, Kannada, Malayalam, Punjabi, Urdu, and English). Leveraging Retrieval-Augmented Generation (RAG), advanced AI models (Groq, Gemini, AI4Bharat), and Indian market-specific optimizations, the platform ensures accurate, regulatory-compliant financial advice with high performance and scalability.
 
 ## 📜 Project Overview
 
 ### Purpose
-The Combined Financial Voice Assistant aims to democratize financial advisory services in India by offering:
+CREDA aims to democratize financial advisory services in India by offering:
 - **Accessibility**: Voice and text interfaces in multiple Indian languages for diverse user groups.
 - **Precision**: RAG-based queries using authoritative sources (RBI, SEBI, IRDAI) and real-time market data (yfinance).
 - **Personalization**: Tailored portfolio optimization, budgeting, and financial health scoring based on user profiles.
