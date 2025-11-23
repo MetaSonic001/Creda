@@ -210,7 +210,7 @@ const Help: React.FC = () => {
           {quickHelp.map((item, index) => (
             <Card key={index} className="glass-effect hover:shadow-glow transition-all cursor-pointer" onClick={item.action}>
               <CardContent className="p-6 text-center space-y-3">
-                <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center text-white mx-auto">
+                <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center dark:text-white text-foreground mx-auto">
                   {item.icon}
                 </div>
                 <h3 className="font-semibold">{item.title}</h3>
@@ -269,7 +269,7 @@ const Help: React.FC = () => {
             <Card key={index} className="glass-effect hover:shadow-glow transition-all cursor-pointer">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-gradient-secondary rounded-lg flex items-center justify-center text-white">
+                  <div className="w-10 h-10 bg-gradient-secondary rounded-lg flex items-center justify-center dark:text-white text-foreground">
                     {resource.icon}
                   </div>
                   <div className="flex-1 space-y-2">
@@ -307,7 +307,7 @@ const Help: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {contactMethods.map((method, index) => (
                 <div key={index} className="text-center space-y-3">
-                  <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center text-white mx-auto">
+                  <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center dark:text-white text-foreground mx-auto">
                     {method.icon}
                   </div>
                   <div>

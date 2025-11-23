@@ -12,7 +12,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>(() => {
-    return (localStorage.getItem('theme') as Theme) || 'system';
+    return (localStorage.getItem('theme') as Theme) || 'light';
   });
 
   const [currentTheme, setCurrentTheme] = useState<'light' | 'dark'>('light');
@@ -23,30 +23,22 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
 
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      root.classList.add(systemTheme);
-      setCurrentTheme(systemTheme);
+    // Always default to light unless the user explicitly selects dark.
+    // Treat `system` as `light` to avoid following OS dark mode automatically.
+    if (theme === 'dark') {
+      root.classList.add('dark');
+      setCurrentTheme('dark');
     } else {
-      root.classList.add(theme);
-      setCurrentTheme(theme);
+      root.classList.add('light');
+      setCurrentTheme('light');
     }
   }, [theme]);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = () => {
-      if (theme === 'system') {
-        const systemTheme = mediaQuery.matches ? 'dark' : 'light';
-        const root = window.document.documentElement;
-        root.classList.remove('light', 'dark');
-        root.classList.add(systemTheme);
-        setCurrentTheme(systemTheme);
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    // No-op: we intentionally do not follow the OS-level prefers-color-scheme
+    // so we don't add a media listener. The app will remain in light mode
+    // unless the user explicitly switches to dark.
+    return;
   }, [theme]);
 
   return (

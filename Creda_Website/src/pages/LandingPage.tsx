@@ -349,7 +349,7 @@ const LandingPage: React.FC = () => {
               transition={{ delay: 0.2 }}
             >
               <Card className="relative p-8 glass-effect hover:shadow-glow transition-all duration-300 border-primary">
-                <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-primary text-white">
+                <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-primary dark:text-white text-foreground">
                   Most Popular
                 </Badge>
                 <CardHeader className="pb-8">
@@ -426,7 +426,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-hero text-white">
+      <section className="py-20 px-4 bg-gradient-hero dark:text-white text-foreground">
         <div className="container mx-auto max-w-4xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 50 }}

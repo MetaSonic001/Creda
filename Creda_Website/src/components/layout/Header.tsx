@@ -12,12 +12,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Badge } from '@/components/ui/badge';
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import NotificationPanel from '@/components/ui/notification-panel';
 
 const Header: React.FC = () => {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, currentTheme } = useTheme();
   const { currentLanguage, setLanguage, t } = useLanguage();
   const location = useLocation();
   const isLandingPage = location.pathname === '/';
@@ -89,9 +89,9 @@ const Header: React.FC = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+              onClick={() => setTheme(currentTheme === 'light' ? 'dark' : 'light')}
             >
-              {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+              {currentTheme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
             </Button>
 
             {/* Language Selector */}
