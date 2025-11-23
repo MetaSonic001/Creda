@@ -155,21 +155,21 @@ const Voice: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div className="space-y-3">
                 <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto">
-                  <span className="text-white font-bold">1</span>
+                  <span className="dark:text-white text-foreground font-bold">1</span>
                 </div>
                 <h3 className="font-semibold">Activate</h3>
                 <p className="text-sm text-muted-foreground">Say "Hey Creda" to wake up the voice assistant</p>
               </div>
               <div className="space-y-3">
                 <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center mx-auto">
-                  <span className="text-white font-bold">2</span>
+                  <span className="dark:text-white text-foreground font-bold">2</span>
                 </div>
                 <h3 className="font-semibold">Speak</h3>
                 <p className="text-sm text-muted-foreground">Give your command in any supported language</p>
               </div>
               <div className="space-y-3">
                 <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center mx-auto">
-                  <span className="text-white font-bold">3</span>
+                  <span className="dark:text-white text-foreground font-bold">3</span>
                 </div>
                 <h3 className="font-semibold">Execute</h3>
                 <p className="text-sm text-muted-foreground">Watch as CREDA executes your command instantly</p>

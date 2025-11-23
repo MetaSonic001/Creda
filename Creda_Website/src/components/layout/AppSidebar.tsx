@@ -114,8 +114,8 @@ export function AppSidebar() {
   
   const getNavClassName = ({ isActive }: { isActive: boolean }) => 
     isActive 
-      ? 'bg-gradient-primary text-white shadow-glow font-medium' 
-      : 'hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-colors';
+      ? 'bg-gradient-primary text-foreground shadow-glow font-medium' 
+      : 'text-sidebar-foreground hover:bg-muted/80 hover:text-foreground transition-colors';
 
   return (
     <Sidebar 
@@ -126,7 +126,7 @@ export function AppSidebar() {
         {!collapsed && (
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-white" />
+              <TrendingUp className="w-5 h-5 dark:text-white text-foreground" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-gradient">Creda</h2>
@@ -136,7 +136,7 @@ export function AppSidebar() {
         )}
         {collapsed && (
           <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center mx-auto">
-            <TrendingUp className="w-5 h-5 text-white" />
+            <TrendingUp className="w-5 h-5 dark:text-white text-foreground" />
           </div>
         )}
       </SidebarHeader>

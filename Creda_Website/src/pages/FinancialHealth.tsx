@@ -182,10 +182,10 @@ const FinancialHealth: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'excellent': return <Badge className="bg-success text-white">Excellent</Badge>;
-      case 'good': return <Badge className="bg-info text-white">Good</Badge>;
-      case 'needs_improvement': return <Badge className="bg-warning text-white">Needs Work</Badge>;
-      case 'poor': return <Badge className="bg-error text-white">Poor</Badge>;
+      case 'excellent': return <Badge className="bg-success dark:text-white text-foreground">Excellent</Badge>;
+      case 'good': return <Badge className="bg-info dark:text-white text-foreground">Good</Badge>;
+      case 'needs_improvement': return <Badge className="bg-warning dark:text-white text-foreground">Needs Work</Badge>;
+      case 'poor': return <Badge className="bg-error dark:text-white text-foreground">Poor</Badge>;
       default: return <Badge variant="secondary">Unknown</Badge>;
     }
   };
@@ -316,7 +316,7 @@ const FinancialHealth: React.FC = () => {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-gradient-primary rounded-lg text-white">
+                      <div className="p-2 bg-gradient-primary rounded-lg dark:text-white text-foreground">
                         {component.icon}
                       </div>
                       <div>
@@ -500,7 +500,7 @@ const FinancialHealth: React.FC = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-xl font-bold text-success">{peerComparison.topPerformers}</p>
-                      <Badge className="bg-success text-white">Goal</Badge>
+                      <Badge className="bg-success dark:text-white text-foreground">Goal</Badge>
                     </div>
                   </div>
                 </div>

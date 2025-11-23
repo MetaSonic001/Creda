@@ -375,7 +375,7 @@ const Knowledge: React.FC = () => {
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <div className="p-2 bg-gradient-primary rounded-lg text-white">
+                            <div className="p-2 bg-gradient-primary rounded-lg dark:text-white text-foreground">
                               {topic.icon}
                             </div>
                             <div>
@@ -617,7 +617,7 @@ const Knowledge: React.FC = () => {
                     onClick={() => handleQuestionClick(question)}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 rounded-full bg-gradient-primary text-white text-xs flex items-center justify-center font-bold">
+                      <div className="w-6 h-6 rounded-full bg-gradient-primary dark:text-white text-foreground text-xs flex items-center justify-center font-bold">
                         {index + 1}
                       </div>
                       <span className="font-medium">{question}</span>

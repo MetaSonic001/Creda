@@ -128,10 +128,10 @@ const Goals: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'completed': return <Badge className="bg-success text-white">Completed</Badge>;
-      case 'ahead': return <Badge className="bg-success text-white">Ahead</Badge>;
+      case 'completed': return <Badge className="bg-success dark:text-white text-foreground">Completed</Badge>;
+      case 'ahead': return <Badge className="bg-success dark:text-white text-foreground">Ahead</Badge>;
       case 'on_track': return <Badge variant="outline">On Track</Badge>;
-      case 'behind': return <Badge className="bg-warning text-white">Behind</Badge>;
+      case 'behind': return <Badge className="bg-warning dark:text-white text-foreground">Behind</Badge>;
       default: return <Badge variant="secondary">Unknown</Badge>;
     }
   };
@@ -339,7 +339,7 @@ const Goals: React.FC = () => {
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="p-2 bg-gradient-primary rounded-lg text-white">
+                        <div className="p-2 bg-gradient-primary rounded-lg dark:text-white text-foreground">
                           {getIcon(goal.category)}
                         </div>
                         <div>
@@ -449,7 +449,7 @@ const Goals: React.FC = () => {
                     {goals.slice(0, 3).map((goal) => (
                       <div key={goal.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                         <div className="flex items-center gap-2">
-                          <div className="p-1 bg-gradient-primary rounded text-white">
+                          <div className="p-1 bg-gradient-primary rounded dark:text-white text-foreground">
                             {getIcon(goal.category)}
                           </div>
                           <span className="text-sm font-medium">{goal.name}</span>
